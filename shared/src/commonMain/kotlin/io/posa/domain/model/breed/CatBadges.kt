@@ -1,7 +1,6 @@
 package io.posa.domain.model.breed
 
-import io.posa.domain.model.sync.SyncStatus
-import io.posa.domain.model.sync.SyncableModel
+import io.posa.core.common.enum.SyncStatus
 
 data class CatBadges(
     val isIndoor: Boolean,

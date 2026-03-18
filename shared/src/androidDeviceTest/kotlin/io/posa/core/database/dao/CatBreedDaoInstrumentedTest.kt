@@ -9,7 +9,7 @@ import io.posa.core.database.entity.breed.CatBadgesEntity
 import io.posa.core.database.entity.breed.CatBreedEntity
 import io.posa.core.database.entity.breed.CatTraitsEntity
 import io.posa.core.database.entity.favourite.FavouriteImageEntity
-import io.posa.domain.model.sync.SyncStatus
+import io.posa.core.common.enum.SyncStatus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -159,7 +159,6 @@ class CatBreedDaoInstrumentedTest {
         lifeSpan = "12 - 16",
         weight = "8 - 12",
         temperaments = "Active, Curious, Gentle",
-        syncStatus = SyncStatus.SYNCED
     )
 
     private fun traitsEntity(breedId: String) = CatTraitsEntity(

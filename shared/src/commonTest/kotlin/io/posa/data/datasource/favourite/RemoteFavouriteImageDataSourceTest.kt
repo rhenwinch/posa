@@ -20,13 +20,13 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class RemoteFavouriteImagesDataSourceTest {
+class RemoteFavouriteImageDataSourceTest {
 
     @Test
     fun getFavourites_emitsEmptyList_whenUserIdIsMissing() = runTest {
         val api = FakeTheCatApiService()
         val dataStore = FakePreferencesDataStore(userId = null)
-        val source = RemoteFavouriteImagesDataSource(api = api, dataStore = dataStore)
+        val source = RemoteFavouriteImageDataSource(api = api, dataStore = dataStore)
 
         source.getFavourites(
             page = 0,
@@ -44,7 +44,7 @@ class RemoteFavouriteImagesDataSourceTest {
     fun getFavourites_usesDescOrder_andMapsDtos_whenUserIdExists() = runTest {
         val api = FakeTheCatApiService()
         val dataStore = FakePreferencesDataStore(userId = "user-1")
-        val source = RemoteFavouriteImagesDataSource(api = api, dataStore = dataStore)
+        val source = RemoteFavouriteImageDataSource(api = api, dataStore = dataStore)
         val favourites = listOf(
             favouriteDto(id = 1L, imageId = "img-1", createdAt = 1_700_000_001_000L),
             favouriteDto(id = 2L, imageId = "img-2", createdAt = 1_700_000_002_000L),
@@ -71,7 +71,7 @@ class RemoteFavouriteImagesDataSourceTest {
     fun getFavourites_usesAscOrder_whenSortOrderIsNotDescending() = runTest {
         val api = FakeTheCatApiService()
         val dataStore = FakePreferencesDataStore(userId = "user-2")
-        val source = RemoteFavouriteImagesDataSource(api = api, dataStore = dataStore)
+        val source = RemoteFavouriteImageDataSource(api = api, dataStore = dataStore)
         api.favouritesFlow = flowOf(emptyList())
 
         source.getFavourites(
@@ -90,7 +90,7 @@ class RemoteFavouriteImagesDataSourceTest {
     fun addFavourite_callsApiWithImageIdAndUserId() = runTest {
         val api = FakeTheCatApiService()
         val dataStore = FakePreferencesDataStore(userId = "user-3")
-        val source = RemoteFavouriteImagesDataSource(api = api, dataStore = dataStore)
+        val source = RemoteFavouriteImageDataSource(api = api, dataStore = dataStore)
         val favourite = favouriteDto(id = 5L, imageId = "img-5", createdAt = 1_700_000_005_000L).toDomain()
 
         source.addFavourite(data = favourite)
@@ -103,7 +103,7 @@ class RemoteFavouriteImagesDataSourceTest {
     fun addFavourite_throws_whenUserIdIsMissing() = runTest {
         val api = FakeTheCatApiService()
         val dataStore = FakePreferencesDataStore(userId = null)
-        val source = RemoteFavouriteImagesDataSource(api = api, dataStore = dataStore)
+        val source = RemoteFavouriteImageDataSource(api = api, dataStore = dataStore)
         val favourite = favouriteDto(id = 6L, imageId = "img-6", createdAt = 1_700_000_006_000L).toDomain()
 
         val error = assertFailsWith<IllegalArgumentException> {
@@ -117,10 +117,21 @@ class RemoteFavouriteImagesDataSourceTest {
     }
 
     @Test
+    fun getPendingSyncFavourites_returnsEmptyList() = runTest {
+        val api = FakeTheCatApiService()
+        val dataStore = FakePreferencesDataStore(userId = "user-5")
+        val source = RemoteFavouriteImageDataSource(api = api, dataStore = dataStore)
+
+        val pending = source.getPendingSyncFavourites()
+
+        assertEquals(emptyList(), pending)
+    }
+
+    @Test
     fun removeFavourite_callsApiWithFavouriteId_whenUserIdExists() = runTest {
         val api = FakeTheCatApiService()
         val dataStore = FakePreferencesDataStore(userId = "user-4")
-        val source = RemoteFavouriteImagesDataSource(api = api, dataStore = dataStore)
+        val source = RemoteFavouriteImageDataSource(api = api, dataStore = dataStore)
 
         source.removeFavourite(id = 42L)
 
@@ -131,7 +142,7 @@ class RemoteFavouriteImagesDataSourceTest {
     fun removeFavourite_throws_whenUserIdIsMissing() = runTest {
         val api = FakeTheCatApiService()
         val dataStore = FakePreferencesDataStore(userId = null)
-        val source = RemoteFavouriteImagesDataSource(api = api, dataStore = dataStore)
+        val source = RemoteFavouriteImageDataSource(api = api, dataStore = dataStore)
 
         val error = assertFailsWith<IllegalArgumentException> {
             source.removeFavourite(id = 99L)

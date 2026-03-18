@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import io.posa.core.common.enum.SortOrder
 import io.posa.core.datastore.PosaDataStore
-import io.posa.domain.datasource.FavouriteImagesDataSource
+import io.posa.domain.datasource.FavouriteImageDataSource
 import io.posa.domain.model.favourite.FavouriteImage
 import io.pusa.network.TheCatApiService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,10 +15,10 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class RemoteFavouriteImagesDataSource(
+class RemoteFavouriteImageDataSource(
     private val api: TheCatApiService,
     private val dataStore: DataStore<Preferences>
-) : FavouriteImagesDataSource {
+) : FavouriteImageDataSource {
     override fun getFavourites(
         page: Int,
         limit: Int,
@@ -42,13 +42,23 @@ class RemoteFavouriteImagesDataSource(
             }
     }
 
-    override suspend fun addFavourite(data: FavouriteImage) {
+    override suspend fun addFavourite(data: FavouriteImage): Long {
         val userId = requireUserId(action = "add")
 
-        api.addFavourite(
+        val response = api.addFavourite(
             imageId = data.imageId,
             userId = userId
         )
+
+        requireNotNull(response.id) {
+            "Failed to add favourite image to remote: ${response.message}"
+        }
+
+        return response.id
+    }
+
+    override suspend fun getPendingSyncFavourites(): List<FavouriteImage> {
+        return emptyList()
     }
 
     override suspend fun removeFavourite(id: Long) {

@@ -2,7 +2,7 @@ package io.posa.data.datasource.breed
 
 import co.touchlab.kermit.Logger
 import io.posa.core.common.AppDispatchers
-import io.posa.core.common.enum.Measurement
+import io.posa.core.common.enum.SortOrder
 import io.posa.domain.datasource.CatBreedDataSource
 import io.posa.domain.model.breed.CatBreed
 import io.pusa.network.TheCatApiService
@@ -15,6 +15,24 @@ class RemoteCatBreedDataSource(
         private val log = Logger.withTag(QUALIFIER_NAME)
 
         const val QUALIFIER_NAME = "RemoteCatBreedDataSource"
+    }
+
+    override suspend fun getBreeds(
+        page: Int,
+        limit: Int,
+        sortOrder: SortOrder
+    ): List<CatBreed> {
+        return withContext(AppDispatchers.IO) {
+            apiService.getBreeds(
+                page = page,
+                limit = limit,
+                order = when (sortOrder) {
+                    SortOrder.RANDOM -> "RANDOM"
+                    SortOrder.ASC -> "ASC"
+                    SortOrder.DESC -> "DESC"
+                }
+            ).map { it.toDomain() }
+        }
     }
 
     override suspend fun getBreed(id: String): CatBreed? {

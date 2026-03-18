@@ -4,7 +4,7 @@ import io.posa.core.common.enum.Measurement
 import io.posa.domain.model.breed.CatBadges
 import io.posa.domain.model.breed.CatBreed
 import io.posa.domain.model.breed.CatTraits
-import io.posa.domain.model.sync.SyncStatus
+import io.posa.core.common.enum.SyncStatus
 import io.pusa.network.TheCatApiService
 import io.pusa.network.dto.CatBreedDto
 import io.pusa.network.dto.CatFavouriteDto
@@ -89,7 +89,6 @@ class RemoteCatBreedDataSourceTest {
                 hasShortLegs = false,
                 isLap = true,
             ),
-            syncStatus = SyncStatus.SYNCED
         )
     }
 

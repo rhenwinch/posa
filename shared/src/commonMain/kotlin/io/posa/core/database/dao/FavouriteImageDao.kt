@@ -16,6 +16,7 @@ interface FavouriteImageDao {
     @Query(
         """
         SELECT * FROM favourite_images
+        WHERE syncStatus != 'PENDING_DELETE'
         ORDER BY createdAt DESC
         LIMIT :limit OFFSET (:page * :limit)
         """
@@ -29,6 +30,7 @@ interface FavouriteImageDao {
     @Query(
         """
         SELECT * FROM favourite_images
+        WHERE syncStatus != 'PENDING_DELETE'
         ORDER BY createdAt ASC
         LIMIT :limit OFFSET (:page * :limit)
         """
@@ -41,8 +43,18 @@ interface FavouriteImageDao {
     @Query("SELECT EXISTS(SELECT 1 FROM favourite_images WHERE imageId = :imageId)")
     suspend fun isFavourite(imageId: String): Boolean
 
+    @Transaction
+    @Query(
+        """
+        SELECT * FROM favourite_images
+        WHERE syncStatus = 'PENDING_SYNC'
+        ORDER BY createdAt DESC
+        """
+    )
+    suspend fun getAllPendingSync(): List<FavouriteImageWithBreed>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun add(favouriteImage: FavouriteImageEntity)
+    suspend fun add(favouriteImage: FavouriteImageEntity): Long
 
     @Query("DELETE FROM favourite_images WHERE id = :id")
     suspend fun remove(id: Long)

@@ -3,7 +3,7 @@ package io.pusa.network.dto
 import androidx.compose.ui.util.fastMap
 import io.posa.core.common.enum.Measurement
 import io.posa.domain.model.image.CatImage
-import io.posa.domain.model.sync.SyncStatus
+import io.posa.core.common.enum.SyncStatus
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -5,7 +5,7 @@ import io.posa.core.common.enum.Measurement
 import io.posa.domain.model.breed.CatBadges
 import io.posa.domain.model.breed.CatBreed
 import io.posa.domain.model.breed.CatTraits
-import io.posa.domain.model.sync.SyncStatus
+import io.posa.core.common.enum.SyncStatus
 import io.pusa.network.util.IntAsBooleanSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -96,7 +96,6 @@ data class CatBreedDto(
         origin = origin,
         description = description,
         lifeSpan = lifeSpan,
-        syncStatus = SyncStatus.SYNCED,
         weight = weightDto.imperial,
         temperaments = temperament
             .split(",")

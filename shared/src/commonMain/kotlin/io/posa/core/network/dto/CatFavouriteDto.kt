@@ -2,7 +2,7 @@ package io.pusa.network.dto
 
 import io.posa.core.common.enum.Measurement
 import io.posa.domain.model.favourite.FavouriteImage
-import io.posa.domain.model.sync.SyncStatus
+import io.posa.core.common.enum.SyncStatus
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "55d4091e1955f9575ea7dd6e86f8e556",
+    "identityHash": "566f028e07d46194ccbb65641267f92f",
     "entities": [
       {
         "tableName": "cat_breeds",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `altName` TEXT, `imageUrl` TEXT NOT NULL, `origin` TEXT NOT NULL, `description` TEXT NOT NULL, `lifeSpan` TEXT NOT NULL, `weight` TEXT NOT NULL, `temperaments` TEXT NOT NULL, `syncStatus` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `altName` TEXT, `imageUrl` TEXT NOT NULL, `origin` TEXT NOT NULL, `description` TEXT NOT NULL, `lifeSpan` TEXT NOT NULL, `weight` TEXT NOT NULL, `temperaments` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -58,12 +58,6 @@
           {
             "fieldPath": "temperaments",
             "columnName": "temperaments",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "syncStatus",
-            "columnName": "syncStatus",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -275,7 +269,7 @@
       },
       {
         "tableName": "favourite_images",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `breedId` TEXT NOT NULL, `imageId` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `syncStatus` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`breedId`) REFERENCES `cat_breeds`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `breedId` TEXT NOT NULL, `imageId` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `syncStatus` TEXT NOT NULL, FOREIGN KEY(`breedId`) REFERENCES `cat_breeds`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -315,7 +309,7 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": false,
+          "autoGenerate": true,
           "columnNames": [
             "id"
           ]
@@ -354,7 +348,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '55d4091e1955f9575ea7dd6e86f8e556')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '566f028e07d46194ccbb65641267f92f')"
     ]
   }
 }

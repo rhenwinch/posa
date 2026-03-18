@@ -1,7 +1,6 @@
 package io.posa.domain.model.breed
 
-import io.posa.domain.model.sync.SyncStatus
-import io.posa.domain.model.sync.SyncableModel
+import io.posa.core.common.enum.SyncStatus
 
 data class CatBreed(
     val id: String,
@@ -15,6 +14,5 @@ data class CatBreed(
     val temperaments: List<String>,
     val traits: CatTraits,
     val badges: CatBadges,
-    override val syncStatus: SyncStatus
-) : SyncableModel
+)
 

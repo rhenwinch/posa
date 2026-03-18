@@ -8,7 +8,7 @@ import io.posa.core.database.entity.breed.CatTraitsEntity
 import io.posa.domain.model.breed.CatBadges
 import io.posa.domain.model.breed.CatBreed
 import io.posa.domain.model.breed.CatTraits
-import io.posa.domain.model.sync.SyncStatus
+import io.posa.core.common.enum.SyncStatus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -156,7 +156,6 @@ class LocalCatBreedDataSourceTest {
             hasShortLegs = false,
             isLap = true,
         ),
-        syncStatus = SyncStatus.PENDING_SYNC
     )
 
     private fun testBreedEntityWithRelations(id: String = "abys") = CatBreedEntityWithTraitsAndBadges(
@@ -170,7 +169,6 @@ class LocalCatBreedDataSourceTest {
             lifeSpan = "14 - 15",
             weight = "8 - 12",
             temperaments = "Active, Curious, Gentle",
-            syncStatus = SyncStatus.PENDING_SYNC
         ),
         traits = CatTraitsEntity(
             breedId = id,

@@ -4,12 +4,12 @@ import androidx.room.Room
 import androidx.sqlite.driver.AndroidSQLiteDriver
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import io.posa.core.common.enum.SyncStatus
 import io.posa.core.database.PosaDatabase
 import io.posa.core.database.entity.breed.CatBadgesEntity
 import io.posa.core.database.entity.breed.CatBreedEntity
 import io.posa.core.database.entity.breed.CatTraitsEntity
 import io.posa.core.database.entity.favourite.FavouriteImageEntity
-import io.posa.domain.model.sync.SyncStatus
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -23,12 +23,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class FavouriteImageDaoInstrumentedTest {
-
-    private companion object {
-        const val DEFAULT_BREED_ID = "abys"
-        const val FIRST_PAGE = 0
-        const val SECOND_PAGE = 1
-    }
 
     private lateinit var database: PosaDatabase
     private lateinit var catBreedDao: CatBreedDao
@@ -113,13 +107,13 @@ class FavouriteImageDaoInstrumentedTest {
             limit = 2
         )
             .first()
-            .map { it.favouriteImage }
+            .map { it.favouriteImage.id }
         val secondPageIds = favouriteImageDao.getAllDescAsFlow(
             page = SECOND_PAGE,
             limit = 2
         )
             .first()
-            .map { it.favouriteImage }
+            .map { it.favouriteImage.id }
 
         assertEquals(listOf(5L, 4L), firstPageIds)
         assertEquals(listOf(3L, 2L), secondPageIds)
@@ -161,6 +155,44 @@ class FavouriteImageDaoInstrumentedTest {
     }
 
     @Test
+    fun getAllPendingSync_returnsOnlyPendingSyncItems_inDescendingCreatedAtOrder() = runTest {
+        val pendingOld = favouriteEntity(
+            id = 30L,
+            imageId = "img-30",
+            createdAt = 1_700_000_100_000L,
+            syncStatus = SyncStatus.PENDING_SYNC,
+        )
+        val synced = favouriteEntity(
+            id = 31L,
+            imageId = "img-31",
+            createdAt = 1_700_000_200_000L,
+            syncStatus = SyncStatus.SYNCED,
+        )
+        val pendingNew = favouriteEntity(
+            id = 32L,
+            imageId = "img-32",
+            createdAt = 1_700_000_300_000L,
+            syncStatus = SyncStatus.PENDING_SYNC,
+        )
+        val pendingDelete = favouriteEntity(
+            id = 33L,
+            imageId = "img-33",
+            createdAt = 1_700_000_400_000L,
+            syncStatus = SyncStatus.PENDING_DELETE,
+        )
+
+        favouriteImageDao.add(pendingOld)
+        favouriteImageDao.add(synced)
+        favouriteImageDao.add(pendingNew)
+        favouriteImageDao.add(pendingDelete)
+
+        val pending = favouriteImageDao.getAllPendingSync()
+
+        assertEquals(listOf(32L, 30L), pending.map { it.favouriteImage.id })
+        assertTrue(pending.all { it.favouriteImage.syncStatus == SyncStatus.PENDING_SYNC })
+    }
+
+    @Test
     fun removeByImageIdByEntity_coverTypicalUnfavouriteFlows() = runTest {
         val first = favouriteEntity(id = 20L, imageId = "img-20", createdAt = 1_700_000_100_000L)
         val second = favouriteEntity(id = 21L, imageId = "img-21", createdAt = 1_700_000_200_000L)
@@ -192,7 +224,6 @@ class FavouriteImageDaoInstrumentedTest {
             lifeSpan = "12 - 16",
             weight = "8 - 12",
             temperaments = "Active, Curious, Gentle",
-            syncStatus = SyncStatus.SYNCED
         )
         val traitsEntity = CatTraitsEntity(
             breedId = breedId,
@@ -237,4 +268,10 @@ class FavouriteImageDaoInstrumentedTest {
         createdAt = createdAt,
         syncStatus = syncStatus
     )
+
+    private companion object {
+        const val DEFAULT_BREED_ID = "abys"
+        const val FIRST_PAGE = 0
+        const val SECOND_PAGE = 1
+    }
 }

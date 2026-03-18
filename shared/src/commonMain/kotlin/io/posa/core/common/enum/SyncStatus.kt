@@ -1,4 +1,4 @@
-package io.posa.domain.model.sync
+package io.posa.core.common.enum
 
 enum class SyncStatus {
     SYNCED,

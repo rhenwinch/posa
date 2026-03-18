@@ -7,8 +7,7 @@ import androidx.room.PrimaryKey
 import io.posa.core.database.entity.breed.CatBreedEntity
 import io.posa.domain.model.favourite.FavouriteImage
 import io.posa.domain.model.image.CatImage
-import io.posa.domain.model.sync.SyncStatus
-import io.posa.domain.model.sync.SyncableModel
+import io.posa.core.common.enum.SyncStatus
 import kotlin.time.Instant
 
 @Entity(
@@ -24,18 +23,18 @@ import kotlin.time.Instant
     indices = [Index(value = ["breedId"])]
 )
 data class FavouriteImageEntity(
-    @PrimaryKey val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val breedId: String,
     val imageId: String,
     val imageUrl: String,
     val createdAt: Long,
-    override val syncStatus: SyncStatus = SyncStatus.PENDING_SYNC
-) : SyncableModel {
+    val syncStatus: SyncStatus = SyncStatus.PENDING_SYNC
+) {
     companion object {
         fun from(favourite: FavouriteImage): FavouriteImageEntity {
             return FavouriteImageEntity(
-                breedId = favourite.breed.id,
                 id = favourite.id,
+                breedId = favourite.breed.id,
                 imageId = favourite.imageId,
                 imageUrl = favourite.imageUrl,
                 syncStatus = favourite.syncStatus,

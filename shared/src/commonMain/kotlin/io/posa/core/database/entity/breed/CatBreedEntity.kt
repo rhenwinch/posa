@@ -7,8 +7,7 @@ import androidx.room.PrimaryKey
 import io.posa.domain.model.breed.CatBadges
 import io.posa.domain.model.breed.CatBreed
 import io.posa.domain.model.breed.CatTraits
-import io.posa.domain.model.sync.SyncStatus
-import io.posa.domain.model.sync.SyncableModel
+import io.posa.core.common.enum.SyncStatus
 
 @Entity(tableName = "cat_breeds")
 data class CatBreedEntity(
@@ -21,8 +20,7 @@ data class CatBreedEntity(
     val lifeSpan: String,
     val weight: String,
     val temperaments: String,
-    override val syncStatus: SyncStatus = SyncStatus.PENDING_SYNC
-) : SyncableModel {
+) {
     fun toDomain(
         traits: CatTraits,
         badges: CatBadges
@@ -36,7 +34,6 @@ data class CatBreedEntity(
             description = description,
             lifeSpan = lifeSpan,
             weight = weight,
-            syncStatus = syncStatus,
             traits = traits,
             badges = badges,
             temperaments = temperaments
@@ -57,7 +54,6 @@ data class CatBreedEntity(
                 description = breed.description,
                 lifeSpan = breed.lifeSpan,
                 weight = breed.weight,
-                syncStatus = breed.syncStatus,
                 temperaments = breed.temperaments.joinToString(",")
             )
         }
@@ -121,7 +117,6 @@ data class CatBreedEntityWithTraitsAndBadges(
             weight = breed.weight,
             traits = traits.toDomain(),
             badges = badges.toDomain(),
-            syncStatus = breed.syncStatus,
             temperaments = breed.temperaments
                 .split(",")
                 .map { it.trim() }

@@ -9,19 +9,19 @@ import io.posa.core.database.entity.breed.CatBreedEntityWithTraitsAndBadges
 import io.posa.core.database.entity.breed.CatTraitsEntity
 import io.posa.core.database.entity.favourite.FavouriteImageEntity
 import io.posa.core.database.entity.favourite.FavouriteImageWithBreed
-import io.posa.domain.model.sync.SyncStatus
+import io.posa.core.common.enum.SyncStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class LocalFavouriteImagesDataSourceTest {
+class LocalFavouriteImageDataSourceTest {
 
     @Test
     fun getFavourites_usesDescendingDaoFlow_andMapsToDomain() = runTest {
         val dao = FakeFavouriteImageDao()
-        val source = LocalFavouriteImagesDataSource(dao = dao)
+        val source = LocalFavouriteImageDataSource(favouritesDao = dao)
         val page = 1
         val limit = 2
         val favouriteItems = listOf(
@@ -48,7 +48,7 @@ class LocalFavouriteImagesDataSourceTest {
     @Test
     fun getFavourites_usesAscendingDaoFlow_whenSortOrderIsNotDescending() = runTest {
         val dao = FakeFavouriteImageDao()
-        val source = LocalFavouriteImagesDataSource(dao = dao)
+        val source = LocalFavouriteImageDataSource(favouritesDao = dao)
         val favouriteItems = listOf(
             favouriteWithBreed(id = 200L, imageId = "img-200", createdAt = 1_700_000_200_000L),
             favouriteWithBreed(id = 201L, imageId = "img-201", createdAt = 1_700_000_201_000L),
@@ -73,7 +73,7 @@ class LocalFavouriteImagesDataSourceTest {
     @Test
     fun addFavourite_convertsDomainAndDelegatesToDao() = runTest {
         val dao = FakeFavouriteImageDao()
-        val source = LocalFavouriteImagesDataSource(dao = dao)
+        val source = LocalFavouriteImageDataSource(favouritesDao = dao)
         val favourite = favouriteWithBreed(
             id = 300L,
             imageId = "img-300",
@@ -86,9 +86,33 @@ class LocalFavouriteImagesDataSourceTest {
     }
 
     @Test
+    fun getPendingSyncFavourites_mapsDaoPendingItems_toDomain() = runTest {
+        val dao = FakeFavouriteImageDao()
+        val source = LocalFavouriteImageDataSource(favouritesDao = dao)
+        val pendingItems = listOf(
+            favouriteWithBreed(
+                id = 301L,
+                imageId = "img-301",
+                createdAt = 1_700_000_301_000L,
+            ),
+            favouriteWithBreed(
+                id = 302L,
+                imageId = "img-302",
+                createdAt = 1_700_000_302_000L,
+            ),
+        )
+        dao.pendingSyncItems = pendingItems
+
+        val result = source.getPendingSyncFavourites()
+
+        assertEquals(pendingItems.map { it.toDomain() }, result)
+        assertEquals(1, dao.pendingSyncCallCount)
+    }
+
+    @Test
     fun removeFavourite_delegatesToDaoById() = runTest {
         val dao = FakeFavouriteImageDao()
-        val source = LocalFavouriteImagesDataSource(dao = dao)
+        val source = LocalFavouriteImageDataSource(favouritesDao = dao)
 
         source.removeFavourite(id = 999L)
 
@@ -110,6 +134,8 @@ class LocalFavouriteImagesDataSourceTest {
 
         var addedFavourite: FavouriteImageEntity? = null
         var removedId: Long? = null
+        var pendingSyncItems: List<FavouriteImageWithBreed> = emptyList()
+        var pendingSyncCallCount: Int = 0
 
         override fun getAllDescAsFlow(
             page: Int,
@@ -133,6 +159,11 @@ class LocalFavouriteImagesDataSourceTest {
 
         override suspend fun isFavourite(imageId: String): Boolean =
             error("Not needed for this test")
+
+        override suspend fun getAllPendingSync(): List<FavouriteImageWithBreed> {
+            pendingSyncCallCount += 1
+            return pendingSyncItems
+        }
 
         override suspend fun add(favouriteImage: FavouriteImageEntity) {
             addedFavourite = favouriteImage
@@ -173,7 +204,6 @@ class LocalFavouriteImagesDataSourceTest {
                 lifeSpan = "14 - 16",
                 weight = "8 - 12",
                 temperaments = "Active, Curious, Gentle",
-                syncStatus = SyncStatus.SYNCED,
             ),
             traits = CatTraitsEntity(
                 breedId = breedId,

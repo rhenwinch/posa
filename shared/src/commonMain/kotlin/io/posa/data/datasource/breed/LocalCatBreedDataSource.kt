@@ -4,15 +4,23 @@ import io.posa.core.database.dao.CatBreedDao
 import io.posa.core.database.entity.breed.CatBadgesEntity
 import io.posa.core.database.entity.breed.CatBreedEntity
 import io.posa.core.database.entity.breed.CatTraitsEntity
+import io.posa.core.common.enum.SortOrder
 import io.posa.domain.datasource.CatBreedDataSource
 import io.posa.domain.model.breed.CatBreed
-import org.koin.core.qualifier.Qualifier
 
 class LocalCatBreedDataSource(
     private val catBreedDao: CatBreedDao
 ) : CatBreedDataSource {
     companion object {
         const val QUALIFIER_NAME = "LocalCatBreedDataSource"
+    }
+
+    override suspend fun getBreeds(
+        page: Int,
+        limit: Int,
+        sortOrder: SortOrder
+    ): List<CatBreed> {
+        throw UnsupportedOperationException("Cannot get paged breeds from local data source")
     }
 
     override suspend fun getBreed(id: String): CatBreed? {
