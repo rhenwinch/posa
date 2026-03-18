@@ -2,6 +2,7 @@ package io.posa.data.datasource.favourite
 
 import app.cash.turbine.test
 import io.posa.core.common.enum.SortOrder
+import io.posa.core.database.dao.CatBreedDao
 import io.posa.core.database.dao.FavouriteImageDao
 import io.posa.core.database.entity.breed.CatBadgesEntity
 import io.posa.core.database.entity.breed.CatBreedEntity
@@ -80,9 +81,10 @@ class LocalFavouriteImageDataSourceTest {
             createdAt = 1_700_000_300_000L,
         ).toDomain()
 
-        source.addFavourite(data = favourite)
+        val insertedId = source.addFavourite(data = favourite)
 
         assertEquals(FavouriteImageEntity.from(favourite), dao.addedFavourite)
+        assertEquals(42L, insertedId)
     }
 
     @Test
@@ -133,6 +135,7 @@ class LocalFavouriteImageDataSourceTest {
         var ascLimit: Int? = null
 
         var addedFavourite: FavouriteImageEntity? = null
+        var addReturnValue: Long = 42L
         var removedId: Long? = null
         var pendingSyncItems: List<FavouriteImageWithBreed> = emptyList()
         var pendingSyncCallCount: Int = 0
@@ -165,8 +168,9 @@ class LocalFavouriteImageDataSourceTest {
             return pendingSyncItems
         }
 
-        override suspend fun add(favouriteImage: FavouriteImageEntity) {
+        override suspend fun add(favouriteImage: FavouriteImageEntity): Long {
             addedFavourite = favouriteImage
+            return addReturnValue
         }
 
         override suspend fun remove(id: Long) {

@@ -50,7 +50,7 @@ class FavouriteImageDaoInstrumentedTest {
     }
 
     @Test
-    fun getAllDescAndAscAsFlow_sortsByCreatedAtForTypicalUiUsage() = runTest {
+    fun getAllDescAndAscAsFlow_sortsByCreatedAt_andExcludesPendingDelete() = runTest {
         favouriteImageDao.add(
             favouriteImage = favouriteEntity(
                 id = 1L,
@@ -72,16 +72,24 @@ class FavouriteImageDaoInstrumentedTest {
                 createdAt = 1_700_000_200_000L
             )
         )
+        favouriteImageDao.add(
+            favouriteImage = favouriteEntity(
+                id = 4L,
+                imageId = "img-4",
+                createdAt = 1_700_000_500_000L,
+                syncStatus = SyncStatus.PENDING_DELETE,
+            )
+        )
 
         val descIds = favouriteImageDao.getAllDescAsFlow(
             page = FIRST_PAGE,
-            limit = 3
+            limit = 10
         )
             .first()
             .map { it.favouriteImage.id }
         val ascIds = favouriteImageDao.getAllAscAsFlow(
             page = FIRST_PAGE,
-            limit = 3
+            limit = 10
         )
             .first()
             .map { it.favouriteImage.id }

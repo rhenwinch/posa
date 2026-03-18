@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.mapLatest
 @OptIn(ExperimentalCoroutinesApi::class)
 class LocalFavouriteImageDataSource(
     private val favouritesDao: FavouriteImageDao,
-    private val breedsDao: CatBreedDao,
 ) : FavouriteImageDataSource {
     override fun getFavourites(
         page: Int,

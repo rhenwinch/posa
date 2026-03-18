@@ -49,13 +49,13 @@ class FavouriteImageRepositoryImplTest {
 
         repository.addFavouriteImage(image)
 
-        assertEquals(listOf(image, image.copy(syncStatus = SyncStatus.SYNCED)), local.addedFavourites)
+        assertEquals(listOf(image.copy(syncStatus = SyncStatus.SYNCED)), local.addedFavourites)
         assertEquals(listOf(image), remote.addedFavourites)
         assertEquals(1, remote.addAttempts)
     }
 
     @Test
-    fun addFavouriteImage_whenRemoteFails_keepsOnlyLocalPendingState() = runTest {
+    fun addFavouriteImage_whenRemoteFails_stopsFlow() = runTest {
         val image = testFavouriteImage(id = 11L, syncStatus = SyncStatus.PENDING_SYNC)
         val local = FakeFavouriteImageDataSource()
         val remote = FakeFavouriteImageDataSource().apply {
@@ -65,7 +65,7 @@ class FavouriteImageRepositoryImplTest {
 
         repository.addFavouriteImage(image)
 
-        assertEquals(listOf(image), local.addedFavourites)
+        assertTrue(local.addedFavourites.isEmpty())
         assertTrue(remote.addedFavourites.isEmpty())
         assertEquals(1, remote.addAttempts)
     }
