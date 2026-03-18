@@ -10,6 +10,7 @@ import io.posa.core.database.dao.FavouriteImageDao
 import io.posa.core.database.entity.breed.CatBadgesEntity
 import io.posa.core.database.entity.breed.CatBreedEntity
 import io.posa.core.database.entity.breed.CatTraitsEntity
+import io.posa.core.database.entity.favourite.FavouriteImageEntity
 import io.posa.di.database.PosaDatabaseConstructor
 import io.posa.domain.model.favourite.FavouriteImage
 import org.koin.mp.KoinPlatformTools.synchronized
@@ -22,7 +23,7 @@ import kotlin.concurrent.Volatile
         CatBreedEntity::class,
         CatBadgesEntity::class,
         CatTraitsEntity::class,
-        FavouriteImage::class,
+        FavouriteImageEntity::class,
     ],
 )
 @ConstructedBy(PosaDatabaseConstructor::class)

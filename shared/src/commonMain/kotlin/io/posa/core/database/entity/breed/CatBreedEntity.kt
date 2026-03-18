@@ -70,12 +70,12 @@ data class CatBreedEntityWithTraitsAndBadges(
         parentColumn = "id",
         entityColumn = "breedId"
     )
-    val traits: CatTraits,
+    val traits: CatTraitsEntity,
     @Relation(
         parentColumn = "id",
         entityColumn = "breedId"
     )
-    val badges: CatBadges
+    val badges: CatBadgesEntity
 ) {
     fun toDomain(): CatBreed {
         return CatBreed(
@@ -87,8 +87,8 @@ data class CatBreedEntityWithTraitsAndBadges(
             description = breed.description,
             lifeSpan = breed.lifeSpan,
             weight = breed.weight,
-            traits = traits,
-            badges = badges,
+            traits = traits.toDomain(),
+            badges = badges.toDomain(),
             syncStatus = breed.syncStatus,
             temperaments = breed.temperaments
                 .split(",")

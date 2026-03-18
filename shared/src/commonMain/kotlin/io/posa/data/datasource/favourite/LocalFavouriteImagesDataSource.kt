@@ -19,4 +19,8 @@ class LocalFavouriteImagesDataSource : FavouriteImagesDataSource {
     override suspend fun removeFavourite(id: String) {
         TODO("Not yet implemented")
     }
+
+    override suspend fun removeAllFavourites() {
+        TODO("Not yet implemented")
+    }
 }

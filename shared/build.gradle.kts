@@ -1,4 +1,5 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec
+import de.jensklingenberg.ktorfit.gradle.ErrorCheckingMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 import org.jetbrains.kotlin.konan.properties.Properties
@@ -8,14 +9,19 @@ plugins {
     alias(libs.plugins.androidMultiplatform)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.ktorfit)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.ktorfit)
     alias(libs.plugins.room)
     alias(libs.plugins.buildKonfig)
 }
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+ktorfit {
+    compilerPluginVersion.set("2.3.3")
+    errorCheckingMode = ErrorCheckingMode.ERROR
 }
 
 kotlin {
@@ -34,6 +40,15 @@ kotlin {
 
         androidResources {
             enable = true
+        }
+
+        withHostTest {
+            isIncludeAndroidResources = true
+        }
+
+        withDeviceTest {
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+            execution = "HOST"
         }
     }
 
@@ -98,6 +113,10 @@ dependencies {
     add("kspIosArm64", libs.room.compiler)
 
     androidRuntimeClasspath(libs.compose.uiTooling)
+
+    add("androidDeviceTestImplementation", libs.junit)
+    add("androidDeviceTestImplementation", libs.androidx.testExt.junit)
+    add("androidDeviceTestImplementation", libs.androidx.espresso.core)
 }
 
 buildkonfig {

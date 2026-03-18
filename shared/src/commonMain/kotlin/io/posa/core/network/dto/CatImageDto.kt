@@ -17,7 +17,6 @@ data class CatImageDto(
     fun toDomain(measurement: Measurement) = CatImage(
         id = id,
         url = url,
-        syncStatus = SyncStatus.SYNCED,
         breed = breeds
             .fastMap { it.toDomain(measurement) }
             .first()

@@ -2,6 +2,7 @@ package io.posa.core.database.entity.favourite
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import io.posa.core.database.entity.breed.CatBreedEntity
 import io.posa.domain.model.favourite.FavouriteImage
@@ -19,7 +20,8 @@ import kotlin.time.Instant
             childColumns = ["breedId"],
             onDelete = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [Index(value = ["breedId"])]
 )
 data class FavouriteImageEntity(
     @PrimaryKey val id: Long,

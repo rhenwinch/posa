@@ -1,5 +1,6 @@
 package io.posa.core.database.dao
 
+import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -7,20 +8,37 @@ import androidx.room.Query
 import io.posa.core.database.entity.favourite.FavouriteImageEntity
 import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface FavouriteImageDao {
-    @Query("SELECT * FROM favourite_images ORDER BY :filter DESC")
+    @Query(
+        """
+        SELECT * FROM favourite_images
+        ORDER BY
+            CASE WHEN :filter = 'createdAt' THEN createdAt END DESC,
+            CASE WHEN :filter = 'breedName' THEN breedName END DESC,
+            id DESC
+        """
+    )
     fun getAllDescAsFlow(filter: String): Flow<List<FavouriteImageEntity>>
 
-    @Query("SELECT * FROM favourite_images ORDER BY :filter ASC")
+    @Query(
+        """
+        SELECT * FROM favourite_images
+        ORDER BY
+            CASE WHEN :filter = 'createdAt' THEN createdAt END ASC,
+            CASE WHEN :filter = 'breedName' THEN breedName END ASC,
+            id ASC
+        """
+    )
     fun getAllAscAsFlow(filter: String): Flow<List<FavouriteImageEntity>>
 
-    @Query("SELECT EXISTS(SELECT 1 FROM favourite_images WHERE image_id = :imageId)")
+    @Query("SELECT EXISTS(SELECT 1 FROM favourite_images WHERE imageId = :imageId)")
     suspend fun isFavourite(imageId: String): Boolean
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(favouriteImage: FavouriteImageEntity)
 
-    @Query("DELETE FROM favourite_images WHERE image_id = :imageId")
+    @Query("DELETE FROM favourite_images WHERE imageId = :imageId")
     suspend fun remove(imageId: String)
 
     @Delete

@@ -29,7 +29,7 @@ interface CatBreedDao {
     @Delete
     suspend fun delete(breed: CatBreedEntity)
 
-    @Query("DELETE FROM cat_traits WHERE breedId = :breedId")
+    @Query("DELETE FROM cat_breeds WHERE id = :id")
     suspend fun delete(id: String)
 
     @Query("DELETE FROM cat_breeds")
