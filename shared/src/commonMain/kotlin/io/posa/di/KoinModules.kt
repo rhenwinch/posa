@@ -8,13 +8,24 @@ import io.posa.core.database.dao.FavouriteImageDao
 import io.posa.core.network.ktorfitClient
 import io.posa.data.datasource.breed.LocalCatBreedDataSource
 import io.posa.data.datasource.breed.RemoteCatBreedDataSource
+import io.posa.data.repository.CatBreedRepositoryImpl
+import io.posa.data.repository.FavouriteImageRepositoryImpl
 import io.posa.di.database.PosaDatabaseFactory
 import io.posa.di.datastore.PosaDataStoreFactory
 import io.posa.domain.datasource.CatBreedDataSource
+import io.posa.domain.datasource.FavouriteImageDataSource
+import io.posa.domain.repository.CatBreedRepository
+import io.posa.domain.repository.FavouriteImageRepository
+import io.posa.domain.usecase.AddToFavourites
+import io.posa.domain.usecase.GetCatBreeds
+import io.posa.domain.usecase.GetFavourites
+import io.posa.domain.usecase.RemoveFromFavourites
+import io.posa.feature.breeds.BreedsViewModel
+import io.posa.feature.favourites.FavouritesViewModel
 import io.pusa.network.TheCatApiService
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import io.pusa.network.createTheCatApiService
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.module
 
@@ -22,16 +33,16 @@ expect val platformModule: Module
 
 val sharedModule = module {
     includes(
-        coreModules,
-        dataSourceModules
+        coreModule,
+        dataSourceModule
     )
 }
 
-val coreModules = module {
+val coreModule = module {
     includes(platformModule)
 
     single<TheCatApiService> {
-        ktorfitClient.create<TheCatApiService>()
+        ktorfitClient.createTheCatApiService()
     }
 
     single<DataStore<Preferences>> { get<PosaDataStoreFactory>().createDataStore() }
@@ -47,14 +58,71 @@ val coreModules = module {
     single<FavouriteImageDao> { get<PosaDatabase>().favouriteImageDao }
 }
 
-val dataSourceModules = module {
-    includes(coreModules)
+val dataSourceModule = module {
+    includes(coreModule)
 
     single<CatBreedDataSource>(qualifier = qualifier(LocalCatBreedDataSource.QUALIFIER_NAME)) {
         LocalCatBreedDataSource(catBreedDao = get<CatBreedDao>())
     }
     single<CatBreedDataSource>(qualifier = qualifier(RemoteCatBreedDataSource.QUALIFIER_NAME)) {
         RemoteCatBreedDataSource(apiService = get<TheCatApiService>())
+    }
+}
+
+val repositoryModule = module {
+    includes(coreModule, dataSourceModule)
+
+    single<FavouriteImageRepository> {
+        FavouriteImageRepositoryImpl(
+            local = get<FavouriteImageDataSource>(
+                qualifier(name = LocalCatBreedDataSource.QUALIFIER_NAME)
+            ),
+            remote = get<FavouriteImageDataSource>(
+                qualifier(name = RemoteCatBreedDataSource.QUALIFIER_NAME)
+            )
+        )
+    }
+
+    single<CatBreedRepository> {
+        CatBreedRepositoryImpl(
+            local = get<CatBreedDataSource>(
+                qualifier(name = LocalCatBreedDataSource.QUALIFIER_NAME)
+            ),
+            remote = get<CatBreedDataSource>(
+                qualifier(name = RemoteCatBreedDataSource.QUALIFIER_NAME)
+            )
+        )
+    }
+}
+
+val useCaseModule = module {
+    includes(coreModule, dataSourceModule, repositoryModule)
+    single { GetCatBreeds(repository = get<CatBreedRepository>()) }
+    factory { GetFavourites(repository = get<FavouriteImageRepository>()) }
+    factory { RemoveFromFavourites(repository = get<FavouriteImageRepository>()) }
+    factory {
+        AddToFavourites(
+            favouriteRepository = get<FavouriteImageRepository>(),
+            catBreedRepository = get<CatBreedRepository>()
+        )
+    }
+}
+
+val viewModelModule = module {
+    includes(coreModule, dataSourceModule, repositoryModule, useCaseModule)
+
+    viewModel {
+        BreedsViewModel(
+            getCatBreeds = get<GetCatBreeds>(),
+            addToFavourites = get<AddToFavourites>()
+        )
+    }
+
+    viewModel {
+        FavouritesViewModel(
+            getFavourites = get<GetFavourites>(),
+            removeFromFavourites = get<RemoveFromFavourites>()
+        )
     }
 }
 
