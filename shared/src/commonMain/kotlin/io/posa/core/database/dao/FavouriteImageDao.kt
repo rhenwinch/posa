@@ -5,32 +5,38 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import io.posa.core.database.entity.favourite.FavouriteImageEntity
+import io.posa.core.database.entity.favourite.FavouriteImageWithBreed
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavouriteImageDao {
+    @Transaction
     @Query(
         """
         SELECT * FROM favourite_images
-        ORDER BY
-            CASE WHEN :filter = 'createdAt' THEN createdAt END DESC,
-            CASE WHEN :filter = 'breedName' THEN breedName END DESC,
-            id DESC
+        ORDER BY createdAt DESC
+        LIMIT :limit OFFSET (:page * :limit)
         """
     )
-    fun getAllDescAsFlow(filter: String): Flow<List<FavouriteImageEntity>>
+    fun getAllDescAsFlow(
+        page: Int,
+        limit: Int
+    ): Flow<List<FavouriteImageWithBreed>>
 
+    @Transaction
     @Query(
         """
         SELECT * FROM favourite_images
-        ORDER BY
-            CASE WHEN :filter = 'createdAt' THEN createdAt END ASC,
-            CASE WHEN :filter = 'breedName' THEN breedName END ASC,
-            id ASC
+        ORDER BY createdAt ASC
+        LIMIT :limit OFFSET (:page * :limit)
         """
     )
-    fun getAllAscAsFlow(filter: String): Flow<List<FavouriteImageEntity>>
+    fun getAllAscAsFlow(
+        page: Int,
+        limit: Int
+    ): Flow<List<FavouriteImageWithBreed>>
 
     @Query("SELECT EXISTS(SELECT 1 FROM favourite_images WHERE imageId = :imageId)")
     suspend fun isFavourite(imageId: String): Boolean
@@ -38,12 +44,9 @@ interface FavouriteImageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(favouriteImage: FavouriteImageEntity)
 
-    @Query("DELETE FROM favourite_images WHERE imageId = :imageId")
-    suspend fun remove(imageId: String)
+    @Query("DELETE FROM favourite_images WHERE id = :id")
+    suspend fun remove(id: Long)
 
     @Delete
     suspend fun remove(favouriteImage: FavouriteImageEntity)
-
-    @Query("DELETE FROM favourite_images")
-    suspend fun removeAll()
 }

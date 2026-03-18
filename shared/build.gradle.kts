@@ -85,6 +85,7 @@ kotlin {
             implementation(libs.koin.compose.viewmodel.navigation)
 
             implementation(libs.ktorfit)
+            implementation(libs.ktorfit.converters.flow)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.serialization)
             implementation(libs.ktor.serialization.kotlinx.json)
@@ -92,11 +93,16 @@ kotlin {
             implementation(libs.room.runtime)
             implementation(libs.room.sqlite.bundled)
 
+            implementation(libs.datastore)
+            implementation(libs.datastore.preferences)
+
             implementation(libs.kermit)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
             implementation(libs.koin.test)
+            implementation(libs.turbine)
         }
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
@@ -117,6 +123,7 @@ dependencies {
     add("androidDeviceTestImplementation", libs.junit)
     add("androidDeviceTestImplementation", libs.androidx.testExt.junit)
     add("androidDeviceTestImplementation", libs.androidx.espresso.core)
+    add("androidDeviceTestImplementation", libs.kotlinx.coroutines.test)
 }
 
 buildkonfig {

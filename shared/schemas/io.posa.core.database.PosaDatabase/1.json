@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "25d1c92443aed84293ca63b861424cac",
+    "identityHash": "55d4091e1955f9575ea7dd6e86f8e556",
     "entities": [
       {
         "tableName": "cat_breeds",
@@ -275,7 +275,7 @@
       },
       {
         "tableName": "favourite_images",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `breedId` TEXT NOT NULL, `imageId` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `breedName` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `syncStatus` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`breedId`) REFERENCES `cat_breeds`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `breedId` TEXT NOT NULL, `imageId` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `syncStatus` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`breedId`) REFERENCES `cat_breeds`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -298,12 +298,6 @@
           {
             "fieldPath": "imageUrl",
             "columnName": "imageUrl",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "breedName",
-            "columnName": "breedName",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -352,9 +346,15 @@
         ]
       }
     ],
+    "views": [
+      {
+        "viewName": "cat_breed_with_traits_and_badges",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT\n            b.*,\n\n            t.id AS traits_id,\n            t.breedId AS traits_breedId,\n            t.adaptability AS traits_adaptability,\n            t.affectionLevel AS traits_affectionLevel,\n            t.childFriendly AS traits_childFriendly,\n            t.dogFriendly AS traits_dogFriendly,\n            t.energyLevel AS traits_energyLevel,\n            t.grooming AS traits_grooming,\n            t.healthIssues AS traits_healthIssues,\n            t.intelligence AS traits_intelligence,\n            t.sheddingLevel AS traits_sheddingLevel,\n            t.socialNeeds AS traits_socialNeeds,\n            t.strangerFriendly AS traits_strangerFriendly,\n            t.vocalisation AS traits_vocalisation,\n\n            badges.id AS badges_id,\n            badges.breedId AS badges_breedId,\n            badges.isIndoor AS badges_isIndoor,\n            badges.isHypoallergenic AS badges_isHypoallergenic,\n            badges.isHairless AS badges_isHairless,\n            badges.hasShortLegs AS badges_hasShortLegs,\n            badges.isLap AS badges_isLap\n        FROM cat_breeds b\n        INNER JOIN cat_traits t ON b.id = t.breedId\n        INNER JOIN cat_badges badges ON b.id = badges.breedId"
+      }
+    ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '25d1c92443aed84293ca63b861424cac')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '55d4091e1955f9575ea7dd6e86f8e556')"
     ]
   }
 }

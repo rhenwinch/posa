@@ -12,6 +12,7 @@ import io.posa.core.database.entity.favourite.FavouriteImageEntity
 import io.posa.domain.model.sync.SyncStatus
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -23,12 +24,18 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class FavouriteImageDaoInstrumentedTest {
 
+    private companion object {
+        const val DEFAULT_BREED_ID = "abys"
+        const val FIRST_PAGE = 0
+        const val SECOND_PAGE = 1
+    }
+
     private lateinit var database: PosaDatabase
     private lateinit var catBreedDao: CatBreedDao
     private lateinit var favouriteImageDao: FavouriteImageDao
 
     @Before
-    fun setUp() = runBlocking {
+    fun setUp() = runTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 
         database = Room.inMemoryDatabaseBuilder(
@@ -49,7 +56,7 @@ class FavouriteImageDaoInstrumentedTest {
     }
 
     @Test
-    fun getAllDescAndAscAsFlow_sortsByCreatedAtForTypicalUiUsage() = runBlocking {
+    fun getAllDescAndAscAsFlow_sortsByCreatedAtForTypicalUiUsage() = runTest {
         favouriteImageDao.add(
             favouriteImage = favouriteEntity(
                 id = 1L,
@@ -72,19 +79,54 @@ class FavouriteImageDaoInstrumentedTest {
             )
         )
 
-        val descIds = favouriteImageDao.getAllDescAsFlow(filter = CREATED_AT_FILTER)
+        val descIds = favouriteImageDao.getAllDescAsFlow(
+            page = FIRST_PAGE,
+            limit = 3
+        )
             .first()
-            .map { it.id }
-        val ascIds = favouriteImageDao.getAllAscAsFlow(filter = CREATED_AT_FILTER)
+            .map { it.favouriteImage.id }
+        val ascIds = favouriteImageDao.getAllAscAsFlow(
+            page = FIRST_PAGE,
+            limit = 3
+        )
             .first()
-            .map { it.id }
+            .map { it.favouriteImage.id }
 
         assertEquals(listOf(2L, 3L, 1L), descIds)
         assertEquals(listOf(1L, 3L, 2L), ascIds)
     }
 
     @Test
-    fun addAndIsFavourite_andReplaceOnConflict_behaveLikeSyncUpdates() = runBlocking {
+    fun getAllDescAsFlow_appliesPageAndLimit_forPaginatedFeed() = runTest {
+        (1L..5L).forEach { id ->
+            favouriteImageDao.add(
+                favouriteImage = favouriteEntity(
+                    id = id,
+                    imageId = "img-$id",
+                    createdAt = 1_700_000_000_000L + (id * 1_000)
+                )
+            )
+        }
+
+        val firstPageIds = favouriteImageDao.getAllDescAsFlow(
+            page = FIRST_PAGE,
+            limit = 2
+        )
+            .first()
+            .map { it.favouriteImage }
+        val secondPageIds = favouriteImageDao.getAllDescAsFlow(
+            page = SECOND_PAGE,
+            limit = 2
+        )
+            .first()
+            .map { it.favouriteImage }
+
+        assertEquals(listOf(5L, 4L), firstPageIds)
+        assertEquals(listOf(3L, 2L), secondPageIds)
+    }
+
+    @Test
+    fun addAndIsFavourite_andReplaceOnConflict_behaveLikeSyncUpdates() = runTest {
         val initial = favouriteEntity(
             id = 10L,
             imageId = "img-10",
@@ -105,18 +147,21 @@ class FavouriteImageDaoInstrumentedTest {
 
         favouriteImageDao.add(favouriteImage = updated)
 
-        val stored = favouriteImageDao.getAllDescAsFlow(filter = CREATED_AT_FILTER).first()
+        val stored = favouriteImageDao.getAllDescAsFlow(
+            page = FIRST_PAGE,
+            limit = 1
+        ).first()
 
         assertFalse(favouriteImageDao.isFavourite(imageId = "img-10"))
         assertTrue(favouriteImageDao.isFavourite(imageId = "img-10-v2"))
         assertEquals(1, stored.size)
-        assertEquals("img-10-v2", stored.single().imageId)
-        assertEquals("https://cdn2.thecatapi.com/images/img-10-v2.jpg", stored.single().imageUrl)
-        assertEquals(SyncStatus.SYNCED, stored.single().syncStatus)
+        assertEquals("img-10-v2", stored.single().favouriteImage.imageId)
+        assertEquals("https://cdn2.thecatapi.com/images/img-10-v2.jpg", stored.single().favouriteImage.imageUrl)
+        assertEquals(SyncStatus.SYNCED, stored.single().favouriteImage.syncStatus)
     }
 
     @Test
-    fun removeByImageIdByEntityAndRemoveAll_coverTypicalUnfavouriteFlows() = runBlocking {
+    fun removeByImageIdByEntity_coverTypicalUnfavouriteFlows() = runTest {
         val first = favouriteEntity(id = 20L, imageId = "img-20", createdAt = 1_700_000_100_000L)
         val second = favouriteEntity(id = 21L, imageId = "img-21", createdAt = 1_700_000_200_000L)
         val third = favouriteEntity(id = 22L, imageId = "img-22", createdAt = 1_700_000_300_000L)
@@ -125,17 +170,12 @@ class FavouriteImageDaoInstrumentedTest {
         favouriteImageDao.add(second)
         favouriteImageDao.add(third)
 
-        favouriteImageDao.remove(imageId = first.imageId)
+        favouriteImageDao.remove(id = first.id)
         assertFalse(favouriteImageDao.isFavourite(imageId = first.imageId))
 
         favouriteImageDao.remove(favouriteImage = second)
         assertFalse(favouriteImageDao.isFavourite(imageId = second.imageId))
         assertTrue(favouriteImageDao.isFavourite(imageId = third.imageId))
-
-        favouriteImageDao.removeAll()
-
-        assertFalse(favouriteImageDao.isFavourite(imageId = third.imageId))
-        assertTrue(favouriteImageDao.getAllDescAsFlow(filter = CREATED_AT_FILTER).first().isEmpty())
     }
 
     private suspend fun insertBreedGraph(
@@ -194,13 +234,7 @@ class FavouriteImageDaoInstrumentedTest {
         breedId = DEFAULT_BREED_ID,
         imageId = imageId,
         imageUrl = imageUrl,
-        breedName = "Abyssinian",
         createdAt = createdAt,
         syncStatus = syncStatus
     )
-
-    private companion object {
-        const val DEFAULT_BREED_ID = "abys"
-        const val CREATED_AT_FILTER = "createdAt"
-    }
 }

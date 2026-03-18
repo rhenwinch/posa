@@ -1,5 +1,6 @@
 package io.pusa.network.dto
 
+import io.posa.core.common.enum.Measurement
 import io.posa.domain.model.favourite.FavouriteImage
 import io.posa.domain.model.sync.SyncStatus
 import kotlinx.serialization.SerialName
@@ -19,8 +20,8 @@ data class CatFavouriteDto(
         id = id,
         imageId = imageId,
         imageUrl = image.url,
-        breedName = image.breeds.first().name,
         createdAt = createdAt,
         syncStatus = SyncStatus.SYNCED,
+        breed = image.breeds.first().toDomain(),
     )
 }

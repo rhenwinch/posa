@@ -14,11 +14,9 @@ data class CatImageDto(
     val height: Int,
     val breeds: List<CatBreedDto> = emptyList(),
 ) {
-    fun toDomain(measurement: Measurement) = CatImage(
+    fun toDomain() = CatImage(
         id = id,
         url = url,
-        breed = breeds
-            .fastMap { it.toDomain(measurement) }
-            .first()
+        breed = breeds.first().toDomain()
     )
 }

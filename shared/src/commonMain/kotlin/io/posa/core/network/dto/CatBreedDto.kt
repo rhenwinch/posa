@@ -88,7 +88,7 @@ data class CatBreedDto(
         val metric: String
     )
 
-    fun toDomain(measurement: Measurement) = CatBreed(
+    fun toDomain() = CatBreed(
         id = id,
         name = name,
         altName = altNames.trim().ifBlank { null },
@@ -97,10 +97,7 @@ data class CatBreedDto(
         description = description,
         lifeSpan = lifeSpan,
         syncStatus = SyncStatus.SYNCED,
-        weight = when (measurement.isImperial) {
-            true -> weightDto.imperial
-            false -> weightDto.metric
-        },
+        weight = weightDto.imperial,
         temperaments = temperament
             .split(",")
             .map { it.trim() }

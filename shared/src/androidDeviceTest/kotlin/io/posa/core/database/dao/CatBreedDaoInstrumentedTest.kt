@@ -11,6 +11,7 @@ import io.posa.core.database.entity.breed.CatTraitsEntity
 import io.posa.core.database.entity.favourite.FavouriteImageEntity
 import io.posa.domain.model.sync.SyncStatus
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -46,7 +47,7 @@ class CatBreedDaoInstrumentedTest {
     }
 
     @Test
-    fun insertAndGetBreed_returnsBreedWithTraitsAndBadges() = runBlocking {
+    fun insertAndGetBreed_returnsBreedWithTraitsAndBadges() = runTest {
         val breedId = "abys"
         val breedEntity = breedEntity(id = breedId, name = "Abyssinian")
         val traitsEntity = traitsEntity(breedId = breedId)
@@ -67,7 +68,7 @@ class CatBreedDaoInstrumentedTest {
     }
 
     @Test
-    fun deleteById_removesBreedAndCascadesToFavourites() = runBlocking {
+    fun deleteById_removesBreedAndCascadesToFavourites() = runTest {
         val breedId = "abys"
         insertBreedGraph(breedId = breedId, breedName = "Abyssinian")
 
@@ -88,7 +89,7 @@ class CatBreedDaoInstrumentedTest {
     }
 
     @Test
-    fun deleteByEntity_removesBreedAndCascadesToFavourites() = runBlocking {
+    fun deleteByEntity_removesBreedAndCascadesToFavourites() = runTest {
         val breedId = "beng"
         val breed = insertBreedGraph(breedId = breedId, breedName = "Bengal")
 
@@ -109,7 +110,7 @@ class CatBreedDaoInstrumentedTest {
     }
 
     @Test
-    fun deleteAll_removesAllBreedsAndTheirFavourites() = runBlocking {
+    fun deleteAll_removesAllBreedsAndTheirFavourites() = runTest {
         insertBreedGraph(breedId = "abys", breedName = "Abyssinian")
         insertBreedGraph(breedId = "siam", breedName = "Siamese")
 
@@ -196,7 +197,6 @@ class CatBreedDaoInstrumentedTest {
         breedId = breedId,
         imageId = imageId,
         imageUrl = "https://cdn2.thecatapi.com/images/$imageId.jpg",
-        breedName = "Breed-$breedId",
         createdAt = createdAt,
         syncStatus = SyncStatus.SYNCED
     )

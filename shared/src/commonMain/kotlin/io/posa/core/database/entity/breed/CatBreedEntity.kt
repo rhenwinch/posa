@@ -1,9 +1,9 @@
 package io.posa.core.database.entity.breed
 
 import androidx.room.Embedded
+import androidx.room.DatabaseView
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.Relation
 import io.posa.domain.model.breed.CatBadges
 import io.posa.domain.model.breed.CatBreed
 import io.posa.domain.model.breed.CatTraits
@@ -64,19 +64,51 @@ data class CatBreedEntity(
     }
 }
 
+@DatabaseView(
+    value =
+        """
+        SELECT
+            b.*,
+
+            t.id AS traits_id,
+            t.breedId AS traits_breedId,
+            t.adaptability AS traits_adaptability,
+            t.affectionLevel AS traits_affectionLevel,
+            t.childFriendly AS traits_childFriendly,
+            t.dogFriendly AS traits_dogFriendly,
+            t.energyLevel AS traits_energyLevel,
+            t.grooming AS traits_grooming,
+            t.healthIssues AS traits_healthIssues,
+            t.intelligence AS traits_intelligence,
+            t.sheddingLevel AS traits_sheddingLevel,
+            t.socialNeeds AS traits_socialNeeds,
+            t.strangerFriendly AS traits_strangerFriendly,
+            t.vocalisation AS traits_vocalisation,
+
+            badges.id AS badges_id,
+            badges.breedId AS badges_breedId,
+            badges.isIndoor AS badges_isIndoor,
+            badges.isHypoallergenic AS badges_isHypoallergenic,
+            badges.isHairless AS badges_isHairless,
+            badges.hasShortLegs AS badges_hasShortLegs,
+            badges.isLap AS badges_isLap
+        FROM cat_breeds b
+        INNER JOIN cat_traits t ON b.id = t.breedId
+        INNER JOIN cat_badges badges ON b.id = badges.breedId
+        """,
+    viewName = CatBreedEntityWithTraitsAndBadges.VIEW_NAME
+)
 data class CatBreedEntityWithTraitsAndBadges(
     @Embedded val breed: CatBreedEntity,
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "breedId"
-    )
+    @Embedded(prefix = "traits_")
     val traits: CatTraitsEntity,
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "breedId"
-    )
+    @Embedded(prefix = "badges_")
     val badges: CatBadgesEntity
 ) {
+    companion object {
+        const val VIEW_NAME = "cat_breed_with_traits_and_badges"
+    }
+
     fun toDomain(): CatBreed {
         return CatBreed(
             id = breed.id,

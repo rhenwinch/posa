@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Transaction
 import io.posa.core.database.entity.breed.CatBadgesEntity
 import io.posa.core.database.entity.breed.CatBreedEntity
 import io.posa.core.database.entity.breed.CatBreedEntityWithTraitsAndBadges
@@ -13,8 +12,7 @@ import io.posa.domain.model.breed.CatBreed
 
 @Dao
 interface CatBreedDao {
-    @Transaction
-    @Query("SELECT * FROM cat_breeds WHERE id = :id")
+    @Query("SELECT * FROM ${CatBreedEntityWithTraitsAndBadges.VIEW_NAME} WHERE id = :id")
     suspend fun getBreed(id: String): CatBreedEntityWithTraitsAndBadges?
 
     @Insert

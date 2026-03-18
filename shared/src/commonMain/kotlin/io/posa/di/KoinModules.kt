@@ -1,5 +1,7 @@
 package io.posa.di
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import io.posa.core.database.PosaDatabase
 import io.posa.core.database.dao.CatBreedDao
 import io.posa.core.database.dao.FavouriteImageDao
@@ -7,6 +9,7 @@ import io.posa.core.network.ktorfitClient
 import io.posa.data.datasource.breed.LocalCatBreedDataSource
 import io.posa.data.datasource.breed.RemoteCatBreedDataSource
 import io.posa.di.database.PosaDatabaseFactory
+import io.posa.di.datastore.PosaDataStoreFactory
 import io.posa.domain.datasource.CatBreedDataSource
 import io.pusa.network.TheCatApiService
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +33,8 @@ val coreModules = module {
     single<TheCatApiService> {
         ktorfitClient.create<TheCatApiService>()
     }
+
+    single<DataStore<Preferences>> { get<PosaDataStoreFactory>().createDataStore() }
 
     single<PosaDatabase> {
         get<PosaDatabaseFactory>().createDatabase()

@@ -1,17 +1,17 @@
 package io.posa.domain.datasource
 
-import io.posa.core.common.enum.Order
+import io.posa.core.common.enum.SortOrder
+import io.posa.domain.model.favourite.FavouriteImage
+import kotlinx.coroutines.flow.Flow
 
 interface FavouriteImagesDataSource {
-    suspend fun getFavourites(
+    fun getFavourites(
         page: Int,
         limit: Int,
-        order: Order,
-    ): List<String>
+        sortOrder: SortOrder,
+    ): Flow<List<FavouriteImage>>
 
-    suspend fun addFavourite(imageId: String)
+    suspend fun addFavourite(data: FavouriteImage)
 
-    suspend fun removeFavourite(id: String)
-
-    suspend fun removeAllFavourites()
+    suspend fun removeFavourite(id: Long)
 }

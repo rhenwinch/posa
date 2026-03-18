@@ -19,10 +19,7 @@ class RemoteCatBreedDataSource(
 
     override suspend fun getBreed(id: String): CatBreed? {
         return withContext(AppDispatchers.IO) {
-            apiService.getBreed(id).toDomain(
-                // TODO: Allow user to choose between imperial and metric units for weight and height
-                measurement = Measurement.IMPERIAL
-            )
+            apiService.getBreed(id).toDomain()
         }
     }
 

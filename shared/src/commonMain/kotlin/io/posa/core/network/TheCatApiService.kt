@@ -10,6 +10,7 @@ import io.pusa.network.dto.CatFavouriteDto
 import io.pusa.network.dto.CatBreedDto
 import io.pusa.network.dto.CatImageDto
 import io.pusa.network.dto.CommonResponseDto
+import kotlinx.coroutines.flow.Flow
 
 interface TheCatApiService {
     companion object {
@@ -52,11 +53,12 @@ interface TheCatApiService {
     ): CatBreedDto
 
     @GET("v1/favourites")
-    suspend fun getFavourites(
+    fun getFavourites(
         @Query("sub_id") userId: String,
+        @Query page: Int,
         @Query limit: Int = DEFAULT_PAGE_SIZE,
         @Query order: String = "DESC"
-    ): List<CatFavouriteDto>
+    ): Flow<List<CatFavouriteDto>>
 
     @POST("v1/favourites")
     suspend fun addFavourite(

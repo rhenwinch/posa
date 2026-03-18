@@ -10,7 +10,9 @@ import io.pusa.network.dto.CatBreedDto
 import io.pusa.network.dto.CatFavouriteDto
 import io.pusa.network.dto.CatImageDto
 import io.pusa.network.dto.CommonResponseDto
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -92,7 +94,7 @@ class RemoteCatBreedDataSourceTest {
     }
 
     @Test
-    fun getBreed_requestsBreedById_andMapsUsingImperialMeasurement() = runBlocking {
+    fun getBreed_requestsBreedById_andMapsUsingImperialMeasurement() = runTest {
         val api = FakeTheCatApiService().apply {
             breedResult = testBreedDto()
         }
@@ -101,12 +103,12 @@ class RemoteCatBreedDataSourceTest {
         val result = dataSource.getBreed(id = "abys")
 
         assertEquals("abys", api.requestedBreedId)
-        assertEquals(testBreedDto().toDomain(measurement = Measurement.IMPERIAL), result)
+        assertEquals(testBreedDto().toDomain(), result)
         assertEquals("8 - 12", result?.weight)
     }
 
     @Test
-    fun insert_throwsUnsupportedOperationException() = runBlocking {
+    fun insert_throwsUnsupportedOperationException() = runTest {
         val api = FakeTheCatApiService()
         val dataSource = RemoteCatBreedDataSource(apiService = api)
 
@@ -118,7 +120,7 @@ class RemoteCatBreedDataSourceTest {
     }
 
     @Test
-    fun deleteById_throwsUnsupportedOperationException() = runBlocking {
+    fun deleteById_throwsUnsupportedOperationException() = runTest {
         val api = FakeTheCatApiService()
         val dataSource = RemoteCatBreedDataSource(apiService = api)
 
@@ -130,7 +132,7 @@ class RemoteCatBreedDataSourceTest {
     }
 
     @Test
-    fun deleteByBreed_throwsUnsupportedOperationException() = runBlocking {
+    fun deleteByBreed_throwsUnsupportedOperationException() = runTest {
         val api = FakeTheCatApiService()
         val dataSource = RemoteCatBreedDataSource(apiService = api)
 
@@ -167,16 +169,17 @@ class RemoteCatBreedDataSourceTest {
             return breedResult
         }
 
-        override suspend fun getFavourites(
-            userId: String,
-            limit: Int,
-            order: String
-        ): List<CatFavouriteDto> = error("Not needed for this test")
-
         override suspend fun addFavourite(imageId: String, userId: String): CommonResponseDto =
             error("Not needed for this test")
 
         override suspend fun removeFavourite(id: Long): CommonResponseDto =
             error("Not needed for this test")
+
+        override fun getFavourites(
+            userId: String,
+            page: Int,
+            limit: Int,
+            order: String
+        ): Flow<List<CatFavouriteDto>> = error("Not needed for this test")
     }
 }

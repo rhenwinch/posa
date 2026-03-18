@@ -1,5 +1,6 @@
 package io.posa.core.network
 
+import de.jensklingenberg.ktorfit.converter.FlowConverterFactory
 import de.jensklingenberg.ktorfit.ktorfit
 import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -22,6 +23,9 @@ val ktorfitClient by lazy {
                     }
                 )
             }
+            converterFactories(
+                FlowConverterFactory()
+            )
         }
     }.also {
         it.httpClient.plugin(HttpSend).intercept {

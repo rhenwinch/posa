@@ -10,6 +10,7 @@ import io.posa.domain.model.breed.CatBreed
 import io.posa.domain.model.breed.CatTraits
 import io.posa.domain.model.sync.SyncStatus
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -17,7 +18,7 @@ import kotlin.test.assertNull
 class LocalCatBreedDataSourceTest {
 
     @Test
-    fun getBreed_returnsNull_whenDaoReturnsNull() = runBlocking {
+    fun getBreed_returnsNull_whenDaoReturnsNull() = runTest {
         val dao = FakeCatBreedDao()
         val dataSource = LocalCatBreedDataSource(catBreedDao = dao)
 
@@ -28,7 +29,7 @@ class LocalCatBreedDataSourceTest {
     }
 
     @Test
-    fun getBreed_returnsMappedBreed_whenDaoReturnsEntityWithRelations() = runBlocking {
+    fun getBreed_returnsMappedBreed_whenDaoReturnsEntityWithRelations() = runTest {
         val dao = FakeCatBreedDao().apply {
             getBreedResult = testBreedEntityWithRelations()
         }
@@ -41,7 +42,7 @@ class LocalCatBreedDataSourceTest {
     }
 
     @Test
-    fun insert_insertsBreedTraitsAndBadges_inExpectedOrder() = runBlocking {
+    fun insert_insertsBreedTraitsAndBadges_inExpectedOrder() = runTest {
         val dao = FakeCatBreedDao()
         val dataSource = LocalCatBreedDataSource(catBreedDao = dao)
         val breed = testBreed()
@@ -55,7 +56,7 @@ class LocalCatBreedDataSourceTest {
     }
 
     @Test
-    fun deleteById_delegatesToDao() = runBlocking {
+    fun deleteById_delegatesToDao() = runTest {
         val dao = FakeCatBreedDao()
         val dataSource = LocalCatBreedDataSource(catBreedDao = dao)
 
@@ -66,7 +67,7 @@ class LocalCatBreedDataSourceTest {
     }
 
     @Test
-    fun deleteByBreed_convertsBreedAndDelegatesToDao() = runBlocking {
+    fun deleteByBreed_convertsBreedAndDelegatesToDao() = runTest {
         val dao = FakeCatBreedDao()
         val dataSource = LocalCatBreedDataSource(catBreedDao = dao)
         val breed = testBreed()
