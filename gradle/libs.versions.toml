@@ -63,6 +63,9 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 room-sqlite-wrapper = { module = "androidx.room:room-sqlite-wrapper", version.ref = "room" } # Optional wrapper lib
 
+# Kermit
+kermit = { module = "co.touchlab:kermit", version = "2.1.0" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidMultiplatform = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
