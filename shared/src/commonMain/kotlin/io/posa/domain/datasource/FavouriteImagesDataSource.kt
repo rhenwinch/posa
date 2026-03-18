@@ -12,4 +12,6 @@ interface FavouriteImagesDataSource {
     suspend fun addFavourite(imageId: String)
 
     suspend fun removeFavourite(id: String)
+
+    suspend fun removeAllFavourites()
 }

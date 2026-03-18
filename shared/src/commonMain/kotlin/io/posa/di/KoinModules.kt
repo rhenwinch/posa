@@ -9,6 +9,8 @@ import io.posa.data.datasource.breed.RemoteCatBreedDataSource
 import io.posa.di.database.PosaDatabaseFactory
 import io.posa.domain.datasource.CatBreedDataSource
 import io.pusa.network.TheCatApiService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.module
