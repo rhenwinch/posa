@@ -8,8 +8,6 @@ import io.posa.core.database.entity.breed.CatTraitsEntity
 import io.posa.domain.model.breed.CatBadges
 import io.posa.domain.model.breed.CatBreed
 import io.posa.domain.model.breed.CatTraits
-import io.posa.core.common.enum.SyncStatus
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -129,7 +127,7 @@ class LocalCatBreedDataSourceTest {
         id = id,
         name = "Abyssinian",
         altName = "Aby",
-        imageUrl = "https://example.com/abys.jpg",
+        imageId = id,
         origin = "Egypt",
         description = "Active and affectionate.",
         lifeSpan = "14 - 15",
@@ -163,7 +161,7 @@ class LocalCatBreedDataSourceTest {
             id = id,
             name = "Abyssinian",
             altName = "Aby",
-            imageUrl = "https://example.com/abys.jpg",
+            imageId = id,
             origin = "Egypt",
             description = "Active and affectionate.",
             lifeSpan = "14 - 15",

@@ -1,15 +1,18 @@
-package io.pusa.network
+package io.posa.core.network
 
+import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.DELETE
 import de.jensklingenberg.ktorfit.http.GET
+import de.jensklingenberg.ktorfit.http.Headers
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
 import io.posa.core.common.Config.DEFAULT_PAGE_SIZE
-import io.pusa.network.dto.CatFavouriteDto
-import io.pusa.network.dto.CatBreedDto
-import io.pusa.network.dto.CatImageDto
-import io.pusa.network.dto.CommonResponseDto
+import io.posa.core.network.dto.CatFavouriteDto
+import io.posa.core.network.dto.CatBreedDto
+import io.posa.core.network.dto.CatImageDto
+import io.posa.core.network.dto.CommonResponseDto
+import io.posa.core.network.dto.FavouriteRequestDto
 import kotlinx.coroutines.flow.Flow
 
 interface TheCatApiService {
@@ -19,7 +22,7 @@ interface TheCatApiService {
         private const val DEFAULT_HAS_BREEDS = true
     }
 
-    @GET("v1/images/search")
+    @GET("images/search")
     suspend fun getCatImages(
         @Query page: Int,
         @Query("has_breeds") hasBreeds: Boolean = DEFAULT_HAS_BREEDS,
@@ -29,30 +32,30 @@ interface TheCatApiService {
         @Query limit: Int = DEFAULT_PAGE_SIZE
     ): List<CatImageDto>
 
-    @GET("v1/images/{image_id}")
+    @GET("images/{image_id}")
     suspend fun getCatImage(
         @Path("image_id") id: String
     ): CatImageDto
 
-    @GET("v1/breeds")
+    @GET("breeds")
     suspend fun getBreeds(
         @Query page: Int,
         @Query order: String = "RANDOM",
         @Query limit: Int = DEFAULT_PAGE_SIZE
     ): List<CatBreedDto>
 
-    @GET("v1/breeds/search")
+    @GET("breeds/search")
     suspend fun searchBreeds(
         @Query("q") query: String,
         @Query("attach_image") attachImage: Boolean = true,
     ): List<CatBreedDto>
 
-    @GET("v1/breeds/{breed_id}")
+    @GET("breeds/{breed_id}")
     suspend fun getBreed(
         @Path("breed_id") id: String
     ): CatBreedDto
 
-    @GET("v1/favourites")
+    @GET("favourites")
     fun getFavourites(
         @Query("sub_id") userId: String,
         @Query page: Int,
@@ -60,13 +63,13 @@ interface TheCatApiService {
         @Query order: String = "DESC"
     ): Flow<List<CatFavouriteDto>>
 
-    @POST("v1/favourites")
+    @Headers("Content-type: application/json")
+    @POST("favourites")
     suspend fun addFavourite(
-        @Query("image_id") imageId: String,
-        @Query("sub_id") userId: String
+        @Body data: FavouriteRequestDto
     ): CommonResponseDto
 
-    @DELETE("v1/favourites/{favourite_id}")
+    @DELETE("favourites/{favourite_id}")
     suspend fun removeFavourite(
         @Path("favourite_id") id: Long
     ): CommonResponseDto

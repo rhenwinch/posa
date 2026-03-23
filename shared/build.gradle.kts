@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.ktorfit)
     alias(libs.plugins.room)
     alias(libs.plugins.buildKonfig)
@@ -77,14 +78,21 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.navigation)
 
-            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.coil3)
+            implementation(libs.coil3.ktor3)
+
+            implementation(libs.materialKolor)
+
+            api(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.compose.viewmodel.navigation)
 
             implementation(libs.ktorfit)
+            implementation(libs.ktorfit.converters.response)
             implementation(libs.ktorfit.converters.flow)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.serialization)
@@ -100,6 +108,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.junit)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.koin.test)
             implementation(libs.turbine)
@@ -108,7 +117,7 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.room.sqlite.wrapper)
-            implementation(libs.koin.android)
+            api(libs.koin.android)
         }
     }
 }
@@ -133,6 +142,50 @@ buildkonfig {
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
 
-        buildConfigField(FieldSpec.Type.STRING, "CAT_API_KEY", properties["CAT_API_KEY"] as String)
+        buildConfigField(FieldSpec.Type.STRING, "CAT_API_KEY", (properties["CAT_API_KEY"] as String?) ?: "")
+    }
+}
+
+tasks.named("assemble") {
+    dependsOn("assembleXCFramework")
+}
+
+tasks.named("assembleXCFramework") {
+    finalizedBy("generatePackageSwift")
+}
+
+val xcFrameworkPath = "build/XCFrameworks/release/shared.xcframework"
+tasks.register("generatePackageSwift") {
+    group = "build"
+    description = "Generates Package.swift for Swift Package Manager"
+
+    doLast {
+        val packageSwiftContent = """
+            import PackageDescription
+
+            let package = Package(
+                name: "shared",
+                platforms: [
+                    .iOS(.v14)
+                ],
+                products: [
+                    .library(
+                        name: "shared",
+                        targets: ["shared"]
+                    )
+                ],
+
+                targets: [
+                    .binaryTarget(
+                        name: "shared",
+                        path: "./$xcFrameworkPath"
+                    )
+                ]
+            )
+        """.trimIndent()
+
+        val packageSwiftFile = File("$projectDir/Package.swift")
+        packageSwiftFile.writeText(packageSwiftContent)
+        println("✅ Package.swift updated successfully.")
     }
 }

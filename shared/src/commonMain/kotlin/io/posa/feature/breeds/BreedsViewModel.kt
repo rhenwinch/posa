@@ -6,7 +6,6 @@ import co.touchlab.kermit.Logger
 import io.posa.core.common.Async
 import io.posa.core.common.enum.SortOrder
 import io.posa.domain.model.breed.CatBreed
-import io.posa.domain.model.image.CatImage
 import io.posa.domain.usecase.AddToFavourites
 import io.posa.domain.usecase.GetCatBreeds
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,21 +17,23 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-data class BreedsUiState(
+internal data class BreedsUiState(
     val deck: List<CatBreed> = emptyList(),
     val isLoading: Boolean = false,
     val isPrefetching: Boolean = false,
     val error: Throwable? = null,
-    val sortOrder: SortOrder = SortOrder.RANDOM,
     val hasReachedEnd: Boolean = false,
 )
 
-sealed interface BreedsEvent {
+internal sealed interface BreedsEvent {
     data object FavouriteAdded : BreedsEvent
+
+    data object DismissedButHellNah : BreedsEvent
+
     data class ShowError(val message: String) : BreedsEvent
 }
 
-class BreedsViewModel(
+internal class BreedsViewModel(
     private val getCatBreeds: GetCatBreeds,
     private val addToFavourites: AddToFavourites,
 ) : ViewModel() {
@@ -56,18 +57,23 @@ class BreedsViewModel(
         fetchBreeds(isRefresh = true)
     }
 
-    fun swipeRight(breed: CatBreed) {
+    fun swipeRight(
+        breed: CatBreed,
+        troll: Boolean = false,
+    ) {
         removeFromDeck(breed)
-        val image = CatImage(
-            id = breed.id,
-            url = breed.imageUrl,
-            breed = breed,
-        )
+
         viewModelScope.launch {
-            addToFavourites(image).collect { async ->
+            addToFavourites(breed.toCatImage()).collect { async ->
                 when (async) {
                     Async.Loading -> Unit
-                    is Async.Success -> _events.emit(BreedsEvent.FavouriteAdded)
+                    is Async.Success -> {
+                        if (troll) {
+                            _events.emit(BreedsEvent.DismissedButHellNah)
+                        } else {
+                            _events.emit(BreedsEvent.FavouriteAdded)
+                        }
+                    }
                     is Async.Fail -> {
                         log.e(async.error) { "Failed to favourite breed ${breed.id}" }
                         _events.emit(BreedsEvent.ShowError(async.error.message ?: "Unknown error"))
@@ -78,24 +84,8 @@ class BreedsViewModel(
         }
     }
 
-    /**
-     * Called when the user swipes left (pass). Simply removes the card from the deck.
-     */
     fun swipeLeft(breed: CatBreed) {
-        removeFromDeck(breed)
-    }
-
-    fun onSortOrderChange(sortOrder: SortOrder) {
-        if (_uiState.value.sortOrder == sortOrder) return
-        _uiState.update {
-            it.copy(
-                sortOrder = sortOrder,
-                deck = emptyList(),
-                hasReachedEnd = false,
-                error = null,
-            )
-        }
-        fetchBreeds(isRefresh = true)
+        swipeRight(breed, troll = true)
     }
 
     private fun removeFromDeck(breed: CatBreed) {
@@ -121,7 +111,7 @@ class BreedsViewModel(
 
         viewModelScope.launch {
             val page = currentPage
-            val sortOrder = _uiState.value.sortOrder
+            val sortOrder = SortOrder.RANDOM
 
             getCatBreeds(page = page, sortOrder = sortOrder).collect { async ->
                 when (async) {

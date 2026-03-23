@@ -5,15 +5,15 @@ import org.koin.core.KoinApplication
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.includes
 
-expect class KoinInitializer {
-    fun start()
-}
-
-internal fun initKoin(config: KoinAppDeclaration? = null): KoinApplication {
+fun initKoin(config: KoinAppDeclaration? = null): KoinApplication {
     return startKoin {
         includes(config)
         modules(
-            sharedModule,
+            coreModule,
+            dataSourceModule,
+            repositoryModule,
+            useCaseModule,
+            viewModelModule,
             platformModule
         )
     }

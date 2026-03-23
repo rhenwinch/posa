@@ -1,19 +1,19 @@
 package io.posa.data.datasource.breed
 
+import androidx.compose.ui.util.fastFlatMap
+import androidx.compose.ui.util.fastMap
 import co.touchlab.kermit.Logger
 import io.posa.core.common.AppDispatchers
 import io.posa.core.common.enum.SortOrder
 import io.posa.domain.datasource.CatBreedDataSource
 import io.posa.domain.model.breed.CatBreed
-import io.pusa.network.TheCatApiService
+import io.posa.core.network.TheCatApiService
 import kotlinx.coroutines.withContext
 
 class RemoteCatBreedDataSource(
     private val apiService: TheCatApiService
 ) : CatBreedDataSource {
     companion object {
-        private val log = Logger.withTag(QUALIFIER_NAME)
-
         const val QUALIFIER_NAME = "RemoteCatBreedDataSource"
     }
 
@@ -23,7 +23,7 @@ class RemoteCatBreedDataSource(
         sortOrder: SortOrder
     ): List<CatBreed> {
         return withContext(AppDispatchers.IO) {
-            apiService.getBreeds(
+            apiService.getCatImages(
                 page = page,
                 limit = limit,
                 order = when (sortOrder) {
@@ -31,11 +31,20 @@ class RemoteCatBreedDataSource(
                     SortOrder.ASC -> "ASC"
                     SortOrder.DESC -> "DESC"
                 }
-            ).map { it.toDomain() }
+            ).fastFlatMap { images ->
+                images.breeds
+                    .fastMap { breed ->
+                        if (breed.referenceImageId == null) {
+                            breed.copy(referenceImageId = images.id)
+                        } else {
+                            breed
+                        }.toDomain()
+                    }
+            }
         }
     }
 
-    override suspend fun getBreed(id: String): CatBreed? {
+    override suspend fun getBreed(id: String): CatBreed {
         return withContext(AppDispatchers.IO) {
             apiService.getBreed(id).toDomain()
         }

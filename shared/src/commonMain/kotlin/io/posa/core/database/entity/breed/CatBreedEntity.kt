@@ -1,20 +1,19 @@
 package io.posa.core.database.entity.breed
 
-import androidx.room.Embedded
 import androidx.room.DatabaseView
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import io.posa.domain.model.breed.CatBadges
 import io.posa.domain.model.breed.CatBreed
 import io.posa.domain.model.breed.CatTraits
-import io.posa.core.common.enum.SyncStatus
 
 @Entity(tableName = "cat_breeds")
 data class CatBreedEntity(
     @PrimaryKey val id: String,
     val name: String,
     val altName: String?,
-    val imageUrl: String,
+    val imageId: String,
     val origin: String,
     val description: String,
     val lifeSpan: String,
@@ -29,7 +28,7 @@ data class CatBreedEntity(
             id = id,
             name = name,
             altName = altName,
-            imageUrl = imageUrl,
+            imageId = imageId,
             origin = origin,
             description = description,
             lifeSpan = lifeSpan,
@@ -49,7 +48,7 @@ data class CatBreedEntity(
                 id = breed.id,
                 name = breed.name,
                 altName = breed.altName,
-                imageUrl = breed.imageUrl,
+                imageId = breed.imageId,
                 origin = breed.origin,
                 description = breed.description,
                 lifeSpan = breed.lifeSpan,
@@ -110,7 +109,7 @@ data class CatBreedEntityWithTraitsAndBadges(
             id = breed.id,
             name = breed.name,
             altName = breed.altName,
-            imageUrl = breed.imageUrl,
+            imageId = breed.imageId,
             origin = breed.origin,
             description = breed.description,
             lifeSpan = breed.lifeSpan,

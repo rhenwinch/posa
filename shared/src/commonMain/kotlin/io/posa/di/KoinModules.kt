@@ -5,9 +5,13 @@ import androidx.datastore.preferences.core.Preferences
 import io.posa.core.database.PosaDatabase
 import io.posa.core.database.dao.CatBreedDao
 import io.posa.core.database.dao.FavouriteImageDao
+import io.posa.core.network.TheCatApiService
+import io.posa.core.network.createTheCatApiService
 import io.posa.core.network.ktorfitClient
 import io.posa.data.datasource.breed.LocalCatBreedDataSource
 import io.posa.data.datasource.breed.RemoteCatBreedDataSource
+import io.posa.data.datasource.favourite.LocalFavouriteImageDataSource
+import io.posa.data.datasource.favourite.RemoteFavouriteImageDataSource
 import io.posa.data.repository.CatBreedRepositoryImpl
 import io.posa.data.repository.FavouriteImageRepositoryImpl
 import io.posa.di.database.PosaDatabaseFactory
@@ -22,21 +26,12 @@ import io.posa.domain.usecase.GetFavourites
 import io.posa.domain.usecase.RemoveFromFavourites
 import io.posa.feature.breeds.BreedsViewModel
 import io.posa.feature.favourites.FavouritesViewModel
-import io.pusa.network.TheCatApiService
-import io.pusa.network.createTheCatApiService
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.module
 
 expect val platformModule: Module
-
-val sharedModule = module {
-    includes(
-        coreModule,
-        dataSourceModule
-    )
-}
 
 val coreModule = module {
     includes(platformModule)
@@ -67,6 +62,13 @@ val dataSourceModule = module {
     single<CatBreedDataSource>(qualifier = qualifier(RemoteCatBreedDataSource.QUALIFIER_NAME)) {
         RemoteCatBreedDataSource(apiService = get<TheCatApiService>())
     }
+
+    single<FavouriteImageDataSource>(qualifier = qualifier(LocalFavouriteImageDataSource.QUALIFIER_NAME)) {
+        LocalFavouriteImageDataSource(favouritesDao = get<FavouriteImageDao>())
+    }
+    single<FavouriteImageDataSource>(qualifier = qualifier(RemoteFavouriteImageDataSource.QUALIFIER_NAME)) {
+        RemoteFavouriteImageDataSource(api = get<TheCatApiService>(), dataStore = get<DataStore<Preferences>>())
+    }
 }
 
 val repositoryModule = module {
@@ -75,10 +77,10 @@ val repositoryModule = module {
     single<FavouriteImageRepository> {
         FavouriteImageRepositoryImpl(
             local = get<FavouriteImageDataSource>(
-                qualifier(name = LocalCatBreedDataSource.QUALIFIER_NAME)
+                qualifier(name = LocalFavouriteImageDataSource.QUALIFIER_NAME)
             ),
             remote = get<FavouriteImageDataSource>(
-                qualifier(name = RemoteCatBreedDataSource.QUALIFIER_NAME)
+                qualifier(name = RemoteFavouriteImageDataSource.QUALIFIER_NAME)
             )
         )
     }
@@ -97,7 +99,12 @@ val repositoryModule = module {
 
 val useCaseModule = module {
     includes(coreModule, dataSourceModule, repositoryModule)
-    single { GetCatBreeds(repository = get<CatBreedRepository>()) }
+    single {
+        GetCatBreeds(
+            catBreedRepository = get<CatBreedRepository>(),
+            favouriteImageRepository = get<FavouriteImageRepository>()
+        )
+    }
     factory { GetFavourites(repository = get<FavouriteImageRepository>()) }
     factory { RemoveFromFavourites(repository = get<FavouriteImageRepository>()) }
     factory {

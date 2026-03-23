@@ -2,7 +2,7 @@ package io.posa.data.datasource.favourite
 
 import app.cash.turbine.test
 import io.posa.core.common.enum.SortOrder
-import io.posa.core.database.dao.CatBreedDao
+import io.posa.core.common.enum.SyncStatus
 import io.posa.core.database.dao.FavouriteImageDao
 import io.posa.core.database.entity.breed.CatBadgesEntity
 import io.posa.core.database.entity.breed.CatBreedEntity
@@ -10,7 +10,6 @@ import io.posa.core.database.entity.breed.CatBreedEntityWithTraitsAndBadges
 import io.posa.core.database.entity.breed.CatTraitsEntity
 import io.posa.core.database.entity.favourite.FavouriteImageEntity
 import io.posa.core.database.entity.favourite.FavouriteImageWithBreed
-import io.posa.core.common.enum.SyncStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -160,7 +159,7 @@ class LocalFavouriteImageDataSourceTest {
             return ascFlow
         }
 
-        override suspend fun isFavourite(imageId: String): Boolean =
+        override suspend fun isFavourite(breedId: String): Boolean =
             error("Not needed for this test")
 
         override suspend fun getAllPendingSync(): List<FavouriteImageWithBreed> {
@@ -202,7 +201,7 @@ class LocalFavouriteImageDataSourceTest {
                 id = breedId,
                 name = breedName,
                 altName = "Aby",
-                imageUrl = "https://example.com/$breedId.jpg",
+                imageId = breedId,
                 origin = "Egypt",
                 description = "$breedName is playful and social.",
                 lifeSpan = "14 - 16",

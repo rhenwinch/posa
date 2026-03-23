@@ -1,17 +1,14 @@
 package io.posa.data.datasource.breed
 
-import io.posa.core.common.enum.Measurement
+import io.posa.core.network.TheCatApiService
+import io.posa.core.network.dto.CatBreedDto
+import io.posa.core.network.dto.CatFavouriteDto
+import io.posa.core.network.dto.CatImageDto
+import io.posa.core.network.dto.CommonResponseDto
 import io.posa.domain.model.breed.CatBadges
 import io.posa.domain.model.breed.CatBreed
 import io.posa.domain.model.breed.CatTraits
-import io.posa.core.common.enum.SyncStatus
-import io.pusa.network.TheCatApiService
-import io.pusa.network.dto.CatBreedDto
-import io.pusa.network.dto.CatFavouriteDto
-import io.pusa.network.dto.CatImageDto
-import io.pusa.network.dto.CommonResponseDto
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -62,7 +59,7 @@ class RemoteCatBreedDataSourceTest {
             id = id,
             name = "Abyssinian",
             altName = "Aby",
-            imageUrl = "https://example.com/abys.jpg",
+            imageId = id,
             origin = "Egypt",
             description = "Active and affectionate.",
             lifeSpan = "14 - 15",

@@ -22,7 +22,7 @@ class GetCatBreedsTest {
                 testBreed("beng"),
             )
         }
-        val useCase = GetCatBreeds(repository = repository)
+        val useCase = GetCatBreeds(catBreedRepository = repository)
 
         useCase(page = 3, sortOrder = SortOrder.DESC).test {
             assertEquals(Async.Loading, awaitItem())
@@ -45,7 +45,7 @@ class GetCatBreedsTest {
             responses += listOf(testBreed("abys"), testBreed("beng"))
             responses += listOf(testBreed("beng"), testBreed("siam"))
         }
-        val useCase = GetCatBreeds(repository = repository)
+        val useCase = GetCatBreeds(catBreedRepository = repository)
 
         useCase(page = 0, sortOrder = SortOrder.RANDOM).test {
             assertEquals(Async.Loading, awaitItem())
@@ -74,7 +74,7 @@ class GetCatBreedsTest {
         val repository = FakeCatBreedRepository().apply {
             throwOnGetBreeds = expected
         }
-        val useCase = GetCatBreeds(repository = repository)
+        val useCase = GetCatBreeds(catBreedRepository = repository)
 
         useCase(page = 1, sortOrder = SortOrder.ASC).test {
             assertEquals(Async.Loading, awaitItem())
@@ -119,7 +119,7 @@ class GetCatBreedsTest {
         id = id,
         name = "Breed-$id",
         altName = null,
-        imageUrl = "https://example.com/$id.jpg",
+        imageId = id,
         origin = "Egypt",
         description = "Friendly and active.",
         lifeSpan = "12 - 16",

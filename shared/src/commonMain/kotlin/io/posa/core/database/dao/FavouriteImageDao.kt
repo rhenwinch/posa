@@ -40,8 +40,8 @@ interface FavouriteImageDao {
         limit: Int
     ): Flow<List<FavouriteImageWithBreed>>
 
-    @Query("SELECT EXISTS(SELECT 1 FROM favourite_images WHERE imageId = :imageId)")
-    suspend fun isFavourite(imageId: String): Boolean
+    @Query("SELECT EXISTS(SELECT 1 FROM favourite_images WHERE breedId = :breedId)")
+    suspend fun isFavourite(breedId: String): Boolean
 
     @Transaction
     @Query(

@@ -1,16 +1,14 @@
 package io.posa.core.database.dao
 
 import androidx.room.Room
-import androidx.sqlite.driver.AndroidSQLiteDriver
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import io.posa.core.common.enum.SyncStatus
 import io.posa.core.database.PosaDatabase
 import io.posa.core.database.entity.breed.CatBadgesEntity
 import io.posa.core.database.entity.breed.CatBreedEntity
 import io.posa.core.database.entity.breed.CatTraitsEntity
 import io.posa.core.database.entity.favourite.FavouriteImageEntity
-import io.posa.core.common.enum.SyncStatus
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -80,12 +78,12 @@ class CatBreedDaoInstrumentedTest {
         )
         favouriteImageDao.add(favouriteImage = favourite)
 
-        assertTrue(favouriteImageDao.isFavourite(imageId = favourite.imageId))
+        assertTrue(favouriteImageDao.isFavourite(breedId = favourite.imageId))
 
         catBreedDao.delete(id = breedId)
 
         assertNull(catBreedDao.getBreed(id = breedId))
-        assertFalse(favouriteImageDao.isFavourite(imageId = favourite.imageId))
+        assertFalse(favouriteImageDao.isFavourite(breedId = favourite.imageId))
     }
 
     @Test
@@ -101,12 +99,12 @@ class CatBreedDaoInstrumentedTest {
         )
         favouriteImageDao.add(favouriteImage = favourite)
 
-        assertTrue(favouriteImageDao.isFavourite(imageId = favourite.imageId))
+        assertTrue(favouriteImageDao.isFavourite(breedId = favourite.imageId))
 
         catBreedDao.delete(breed = breed)
 
         assertNull(catBreedDao.getBreed(id = breedId))
-        assertFalse(favouriteImageDao.isFavourite(imageId = favourite.imageId))
+        assertFalse(favouriteImageDao.isFavourite(breedId = favourite.imageId))
     }
 
     @Test
@@ -134,8 +132,8 @@ class CatBreedDaoInstrumentedTest {
 
         assertNull(catBreedDao.getBreed(id = "abys"))
         assertNull(catBreedDao.getBreed(id = "siam"))
-        assertFalse(favouriteImageDao.isFavourite(imageId = firstFavourite.imageId))
-        assertFalse(favouriteImageDao.isFavourite(imageId = secondFavourite.imageId))
+        assertFalse(favouriteImageDao.isFavourite(breedId = firstFavourite.imageId))
+        assertFalse(favouriteImageDao.isFavourite(breedId = secondFavourite.imageId))
     }
 
     private suspend fun insertBreedGraph(
@@ -153,7 +151,7 @@ class CatBreedDaoInstrumentedTest {
         id = id,
         name = name,
         altName = null,
-        imageUrl = "https://example.com/$id.jpg",
+        imageId = id,
         origin = "Egypt",
         description = "$name is playful and social.",
         lifeSpan = "12 - 16",

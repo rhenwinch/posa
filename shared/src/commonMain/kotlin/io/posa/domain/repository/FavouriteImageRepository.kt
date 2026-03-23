@@ -11,6 +11,8 @@ interface FavouriteImageRepository {
         sortOrder: SortOrder = SortOrder.DESC,
     ): Flow<List<FavouriteImage>>
 
+    suspend fun isFavourite(breedId: String): Boolean
+
     suspend fun addFavouriteImage(image: FavouriteImage)
 
     suspend fun removeFavouriteImage(image: FavouriteImage)

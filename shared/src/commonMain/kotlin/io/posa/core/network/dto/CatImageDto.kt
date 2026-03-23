@@ -1,9 +1,6 @@
-package io.pusa.network.dto
+package io.posa.core.network.dto
 
-import androidx.compose.ui.util.fastMap
-import io.posa.core.common.enum.Measurement
 import io.posa.domain.model.image.CatImage
-import io.posa.core.common.enum.SyncStatus
 import kotlinx.serialization.Serializable
 
 @Serializable

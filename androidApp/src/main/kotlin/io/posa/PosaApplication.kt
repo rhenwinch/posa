@@ -1,13 +1,17 @@
 package io.posa
 
 import android.app.Application
-import io.posa.di.KoinInitializer
+import io.posa.di.initKoin
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
 
 class PosaApplication : Application() {
-    private val koin by lazy { KoinInitializer(this) }
-
     override fun onCreate() {
         super.onCreate()
-        koin.start()
+
+        initKoin {
+            androidContext(this@PosaApplication)
+            androidLogger()
+        }
     }
 }

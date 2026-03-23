@@ -7,11 +7,11 @@ import androidx.datastore.preferences.core.preferencesOf
 import app.cash.turbine.test
 import io.posa.core.common.enum.SortOrder
 import io.posa.core.datastore.PosaDataStore
-import io.pusa.network.TheCatApiService
-import io.pusa.network.dto.CatBreedDto
-import io.pusa.network.dto.CatFavouriteDto
-import io.pusa.network.dto.CatImageDto
-import io.pusa.network.dto.CommonResponseDto
+import io.posa.core.network.TheCatApiService
+import io.posa.core.network.dto.CatBreedDto
+import io.posa.core.network.dto.CatFavouriteDto
+import io.posa.core.network.dto.CatImageDto
+import io.posa.core.network.dto.CommonResponseDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
@@ -19,6 +19,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.time.Instant
 
 class RemoteFavouriteImageDataSourceTest {
 
@@ -265,7 +266,7 @@ class RemoteFavouriteImageDataSourceTest {
                 )
             ),
         ),
-        createdAt = kotlin.time.Instant.fromEpochMilliseconds(createdAt),
+        createdAt = Instant.fromEpochMilliseconds(createdAt),
         imageId = imageId,
         subId = "sub-123",
         userId = "api-user-123",

@@ -1,12 +1,9 @@
-package io.pusa.network.dto
+package io.posa.core.network.dto
 
-import io.posa.core.common.Config.IMAGE_BASE_URL
-import io.posa.core.common.enum.Measurement
+import io.posa.core.network.util.IntAsBooleanSerializer
 import io.posa.domain.model.breed.CatBadges
 import io.posa.domain.model.breed.CatBreed
 import io.posa.domain.model.breed.CatTraits
-import io.posa.core.common.enum.SyncStatus
-import io.pusa.network.util.IntAsBooleanSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -14,7 +11,7 @@ import kotlinx.serialization.Serializable
 data class CatBreedDto(
     val id: String,
     val name: String,
-    val weightDto: WeightDto,
+    @SerialName("weight") val weightDto: WeightDto,
     val temperament: String,
     val origin: String,
     val description: String,
@@ -32,12 +29,12 @@ data class CatBreedDto(
     @SerialName("life_span") val lifeSpan: String,
 
     @SerialName("affection_level") val affectionLevel: Int,
-    @SerialName("alt_names") val altNames: String,
+    @SerialName("alt_names") val altNames: String? = null,
     @SerialName("child_friendly") val childFriendly: Int,
     @SerialName("dog_friendly") val dogFriendly: Int,
     @SerialName("energy_level") val energyLevel: Int,
     @SerialName("health_issues") val healthIssues: Int,
-    @SerialName("reference_image_id") val referenceImageId: String,
+    @SerialName("reference_image_id") val referenceImageId: String? = null,
     @SerialName("shedding_level") val sheddingLevel: Int,
     @SerialName("social_needs") val socialNeeds: Int,
     @SerialName("stranger_friendly") val strangerFriendly: Int,
@@ -91,8 +88,8 @@ data class CatBreedDto(
     fun toDomain() = CatBreed(
         id = id,
         name = name,
-        altName = altNames.trim().ifBlank { null },
-        imageUrl = "$IMAGE_BASE_URL/$referenceImageId.jpg",
+        altName = altNames?.trim()?.ifBlank { null },
+        imageId = referenceImageId ?: "",
         origin = origin,
         description = description,
         lifeSpan = lifeSpan,

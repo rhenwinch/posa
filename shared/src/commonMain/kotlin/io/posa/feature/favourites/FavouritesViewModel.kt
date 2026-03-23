@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-data class FavouritesUiState(
+internal data class FavouritesUiState(
     val favourites: List<FavouriteImage> = emptyList(),
     val isLoading: Boolean = false,
     val isPaginating: Boolean = false,
@@ -28,12 +28,12 @@ data class FavouritesUiState(
     val hasReachedEnd: Boolean = false,
 )
 
-sealed interface FavouritesEvent {
+internal sealed interface FavouritesEvent {
     data object FavouriteRemoved : FavouritesEvent
     data class ShowError(val message: String) : FavouritesEvent
 }
 
-class FavouritesViewModel(
+internal class FavouritesViewModel(
     private val getFavourites: GetFavourites,
     private val removeFromFavourites: RemoveFromFavourites,
 ) : ViewModel() {

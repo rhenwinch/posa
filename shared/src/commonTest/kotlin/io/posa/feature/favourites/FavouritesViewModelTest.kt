@@ -247,7 +247,7 @@ class FavouritesViewModelTest {
         id = id,
         name = "Breed-$id",
         altName = null,
-        imageUrl = "https://example.com/$id.jpg",
+        imageId = id,
         origin = "Egypt",
         description = "Friendly and social.",
         lifeSpan = "12 - 16",

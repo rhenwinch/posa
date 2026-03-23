@@ -5,10 +5,12 @@ import io.posa.core.common.Async
 import io.posa.core.common.enum.SortOrder
 import io.posa.domain.model.breed.CatBreed
 import io.posa.domain.repository.CatBreedRepository
+import io.posa.domain.repository.FavouriteImageRepository
 import kotlinx.coroutines.flow.flow
 
 class GetCatBreeds(
-    private val repository: CatBreedRepository
+    private val catBreedRepository: CatBreedRepository,
+    private val favouriteImageRepository: FavouriteImageRepository,
 ) {
     companion object {
         val log = Logger.withTag("GetRandomCatBreeds")
@@ -22,12 +24,12 @@ class GetCatBreeds(
     ) = flow<Async<List<CatBreed>>> {
         emit(Async.Loading)
         try {
-            val breeds = repository.getBreeds(
+            val breeds = catBreedRepository.getBreeds(
                 page = page,
                 sortOrder = sortOrder
             ).filterNot {
                 val isDuplicate = it.id in shownBreeds
-                if (!isDuplicate) {
+                if (!isDuplicate || isAddedAlready(it.id)) {
                     shownBreeds.add(it.id)
                 }
 
@@ -41,5 +43,9 @@ class GetCatBreeds(
             }
             emit(Async.Fail(error))
         }
+    }
+
+    private suspend fun isAddedAlready(breedId: String): Boolean {
+        return favouriteImageRepository.isFavourite(breedId)
     }
 }

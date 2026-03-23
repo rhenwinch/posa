@@ -225,7 +225,7 @@ class FavouriteImageRepositoryImplTest {
         id = id,
         name = "Abyssinian",
         altName = "Aby",
-        imageUrl = "https://example.com/$id.jpg",
+        imageId = id,
         origin = "Egypt",
         description = "Playful and social.",
         lifeSpan = "14 - 16",

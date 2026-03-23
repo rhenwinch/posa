@@ -18,6 +18,10 @@ class FavouriteImageRepositoryImpl(
         val log = Logger.withTag("FavouriteImageRepositoryImpl")
     }
 
+    override suspend fun isFavourite(breedId: String): Boolean {
+        return local.isFavourite(breedId)
+    }
+
     override fun getFavouriteImages(
         page: Int,
         limit: Int,

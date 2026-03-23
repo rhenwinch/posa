@@ -11,6 +11,8 @@ interface FavouriteImageDataSource {
         sortOrder: SortOrder,
     ): Flow<List<FavouriteImage>>
 
+    suspend fun isFavourite(breedId: String): Boolean
+
     suspend fun addFavourite(data: FavouriteImage): Long
 
     suspend fun getPendingSyncFavourites(): List<FavouriteImage>

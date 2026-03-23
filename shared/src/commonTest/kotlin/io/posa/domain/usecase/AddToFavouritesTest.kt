@@ -123,7 +123,7 @@ class AddToFavouritesTest {
         id = id,
         name = "Abyssinian",
         altName = "Aby",
-        imageUrl = "https://example.com/$id.jpg",
+        imageId = id,
         origin = "Egypt",
         description = "Active and social.",
         lifeSpan = "14 - 16",

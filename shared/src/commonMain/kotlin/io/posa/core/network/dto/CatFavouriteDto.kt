@@ -1,6 +1,5 @@
-package io.pusa.network.dto
+package io.posa.core.network.dto
 
-import io.posa.core.common.enum.Measurement
 import io.posa.domain.model.favourite.FavouriteImage
 import io.posa.core.common.enum.SyncStatus
 import kotlinx.serialization.SerialName

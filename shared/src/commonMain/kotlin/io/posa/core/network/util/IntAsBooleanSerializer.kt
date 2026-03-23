@@ -1,4 +1,4 @@
-package io.pusa.network.util
+package io.posa.core.network.util
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind

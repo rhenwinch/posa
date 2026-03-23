@@ -1,7 +1,6 @@
 package io.posa.core.database.dao
 
 import androidx.room.Room
-import androidx.sqlite.driver.AndroidSQLiteDriver
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import io.posa.core.common.enum.SyncStatus
@@ -11,7 +10,6 @@ import io.posa.core.database.entity.breed.CatBreedEntity
 import io.posa.core.database.entity.breed.CatTraitsEntity
 import io.posa.core.database.entity.favourite.FavouriteImageEntity
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -145,7 +143,7 @@ class FavouriteImageDaoInstrumentedTest {
         )
 
         favouriteImageDao.add(favouriteImage = initial)
-        assertTrue(favouriteImageDao.isFavourite(imageId = "img-10"))
+        assertTrue(favouriteImageDao.isFavourite(breedId = "img-10"))
 
         favouriteImageDao.add(favouriteImage = updated)
 
@@ -154,8 +152,8 @@ class FavouriteImageDaoInstrumentedTest {
             limit = 1
         ).first()
 
-        assertFalse(favouriteImageDao.isFavourite(imageId = "img-10"))
-        assertTrue(favouriteImageDao.isFavourite(imageId = "img-10-v2"))
+        assertFalse(favouriteImageDao.isFavourite(breedId = "img-10"))
+        assertTrue(favouriteImageDao.isFavourite(breedId = "img-10-v2"))
         assertEquals(1, stored.size)
         assertEquals("img-10-v2", stored.single().favouriteImage.imageId)
         assertEquals("https://cdn2.thecatapi.com/images/img-10-v2.jpg", stored.single().favouriteImage.imageUrl)
@@ -211,11 +209,11 @@ class FavouriteImageDaoInstrumentedTest {
         favouriteImageDao.add(third)
 
         favouriteImageDao.remove(id = first.id)
-        assertFalse(favouriteImageDao.isFavourite(imageId = first.imageId))
+        assertFalse(favouriteImageDao.isFavourite(breedId = first.imageId))
 
         favouriteImageDao.remove(favouriteImage = second)
-        assertFalse(favouriteImageDao.isFavourite(imageId = second.imageId))
-        assertTrue(favouriteImageDao.isFavourite(imageId = third.imageId))
+        assertFalse(favouriteImageDao.isFavourite(breedId = second.imageId))
+        assertTrue(favouriteImageDao.isFavourite(breedId = third.imageId))
     }
 
     private suspend fun insertBreedGraph(
@@ -226,7 +224,7 @@ class FavouriteImageDaoInstrumentedTest {
             id = breedId,
             name = breedName,
             altName = null,
-            imageUrl = "https://example.com/$breedId.jpg",
+            imageId = breedId,
             origin = "Egypt",
             description = "$breedName is playful and social.",
             lifeSpan = "12 - 16",

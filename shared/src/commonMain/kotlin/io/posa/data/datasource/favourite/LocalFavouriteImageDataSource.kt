@@ -14,6 +14,10 @@ import kotlinx.coroutines.flow.mapLatest
 class LocalFavouriteImageDataSource(
     private val favouritesDao: FavouriteImageDao,
 ) : FavouriteImageDataSource {
+    companion object {
+        const val QUALIFIER_NAME = "LocalFavouriteImageDataSource"
+    }
+
     override fun getFavourites(
         page: Int,
         limit: Int,
@@ -34,6 +38,10 @@ class LocalFavouriteImageDataSource(
         return listFlow.mapLatest { list ->
             list.map { entity -> entity.toDomain() }
         }
+    }
+
+    override suspend fun isFavourite(breedId: String): Boolean {
+        return favouritesDao.isFavourite(breedId)
     }
 
     override suspend fun addFavourite(data: FavouriteImage): Long {

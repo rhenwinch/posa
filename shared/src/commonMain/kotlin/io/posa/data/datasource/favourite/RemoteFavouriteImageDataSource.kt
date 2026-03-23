@@ -6,7 +6,8 @@ import io.posa.core.common.enum.SortOrder
 import io.posa.core.datastore.PosaDataStore
 import io.posa.domain.datasource.FavouriteImageDataSource
 import io.posa.domain.model.favourite.FavouriteImage
-import io.pusa.network.TheCatApiService
+import io.posa.core.network.TheCatApiService
+import io.posa.core.network.dto.FavouriteRequestDto
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -19,6 +20,10 @@ class RemoteFavouriteImageDataSource(
     private val api: TheCatApiService,
     private val dataStore: DataStore<Preferences>
 ) : FavouriteImageDataSource {
+    companion object {
+        const val QUALIFIER_NAME = "RemoteFavouriteImageDataSource"
+    }
+
     override fun getFavourites(
         page: Int,
         limit: Int,
@@ -27,9 +32,7 @@ class RemoteFavouriteImageDataSource(
         return dataStore.data
             .flatMapLatest { prefs ->
                 val userId = prefs[PosaDataStore.PREF_USER_ID]
-                if (userId == null) {
-                return@flatMapLatest flowOf(emptyList<FavouriteImage>())
-                }
+                    ?: return@flatMapLatest flowOf(emptyList<FavouriteImage>())
 
                 api.getFavourites(
                     userId = userId,
@@ -42,12 +45,18 @@ class RemoteFavouriteImageDataSource(
             }
     }
 
+    override suspend fun isFavourite(breedId: String): Boolean {
+        throw UnsupportedOperationException("Not available on remote data source. Use local data source for this method.")
+    }
+
     override suspend fun addFavourite(data: FavouriteImage): Long {
         val userId = requireUserId(action = "add")
 
         val response = api.addFavourite(
-            imageId = data.imageId,
-            userId = userId
+            data = FavouriteRequestDto(
+                imageId = data.imageId,
+                userId = userId
+            )
         )
 
         requireNotNull(response.id) {
