@@ -14,6 +14,8 @@ class GetCatBreeds(
 ) {
     companion object {
         val log = Logger.withTag("GetRandomCatBreeds")
+
+        const val PAGE_SIZE = 10
     }
 
     private val shownBreeds = mutableSetOf<String>()
@@ -24,19 +26,26 @@ class GetCatBreeds(
     ) = flow<Async<List<CatBreed>>> {
         emit(Async.Loading)
         try {
-            val breeds = catBreedRepository.getBreeds(
-                page = page,
-                sortOrder = sortOrder
-            ).filterNot {
-                val isDuplicate = it.id in shownBreeds
-                if (!isDuplicate || isAddedAlready(it.id)) {
-                    shownBreeds.add(it.id)
+            val results = mutableListOf<CatBreed>()
+
+            var tempPage = page
+            while (results.size < PAGE_SIZE) {
+                val breeds = catBreedRepository.getBreeds(
+                    page = tempPage++,
+                    sortOrder = sortOrder
+                )
+
+                if (breeds.isEmpty()) break
+
+                val filteredBreeds = breeds.filterNot { breed ->
+                    shownBreeds.contains(breed.id) || isAddedAlready(breed.id)
                 }
 
-                isDuplicate
+                shownBreeds.addAll(filteredBreeds.map { it.id })
+                results.addAll(filteredBreeds)
             }
 
-            emit(Async.Success(breeds))
+            emit(Async.Success(results.toList()))
         } catch (error: Throwable) {
             log.e(error) {
                 "Failed to get cat breeds for page $page and sort order $sortOrder"

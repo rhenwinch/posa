@@ -40,7 +40,6 @@ internal class BreedsViewModel(
 
     companion object {
         private val log = Logger.withTag("BreedsViewModel")
-        const val PAGE_SIZE = 10
 
         const val PRELOAD_THRESHOLD = 3
     }
@@ -95,11 +94,12 @@ internal class BreedsViewModel(
 
     private fun checkAndPreload() {
         val state = _uiState.value
-        if (state.deck.size <= PRELOAD_THRESHOLD
+        val canPaginate = state.deck.size <= PRELOAD_THRESHOLD
             && !state.isPrefetching
             && !state.isLoading
             && !state.hasReachedEnd
-        ) {
+
+        if (canPaginate) {
             fetchBreeds(isRefresh = false)
         }
     }
@@ -128,7 +128,7 @@ internal class BreedsViewModel(
                                 deck = it.deck + newBreeds,
                                 isLoading = false,
                                 isPrefetching = false,
-                                hasReachedEnd = newBreeds.size < PAGE_SIZE,
+                                hasReachedEnd = newBreeds.size < GetCatBreeds.PAGE_SIZE,
                                 error = null,
                             )
                         }
