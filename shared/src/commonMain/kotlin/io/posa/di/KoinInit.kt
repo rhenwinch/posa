@@ -1,7 +1,7 @@
 package io.posa.di
 
-import org.koin.core.context.startKoin
 import org.koin.core.KoinApplication
+import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.includes
 
@@ -9,12 +9,12 @@ fun initKoin(config: KoinAppDeclaration? = null): KoinApplication {
     return startKoin {
         includes(config)
         modules(
+            platformModule,
             coreModule,
             dataSourceModule,
             repositoryModule,
             useCaseModule,
-            viewModelModule,
-            platformModule
+            viewModelModule
         )
     }
 }

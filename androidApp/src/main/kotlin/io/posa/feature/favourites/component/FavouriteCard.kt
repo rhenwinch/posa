@@ -31,15 +31,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import io.posa.R
 import io.posa.domain.model.favourite.FavouriteImage
 import kotlinx.coroutines.delay
-import org.jetbrains.compose.resources.painterResource
-import posa.shared.generated.resources.Res
-import posa.shared.generated.resources.unfavourite
 
 
 @Composable
@@ -113,7 +112,7 @@ internal fun FavouriteCard(
                     modifier = Modifier.size(28.dp),
                 ) {
                     Icon(
-                        painter = painterResource(Res.drawable.unfavourite),
+                        painter = painterResource(R.drawable.unfavourite),
                         contentDescription = "Remove from favourites",
                         tint = MaterialTheme.colorScheme.onTertiaryContainer,
                         modifier = Modifier.size(14.dp),

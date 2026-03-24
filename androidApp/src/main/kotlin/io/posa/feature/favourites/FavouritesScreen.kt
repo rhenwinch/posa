@@ -31,8 +31,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import io.posa.R
 import io.posa.core.common.enum.SortOrder
 import io.posa.domain.model.favourite.FavouriteImage
 import io.posa.feature.favourites.component.EndOfListLabel
@@ -44,10 +46,7 @@ import io.posa.feature.favourites.component.PaginationFooter
 import io.posa.feature.favourites.component.SortOrderToggle
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
-import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
-import posa.shared.generated.resources.Res
-import posa.shared.generated.resources.back
 
 private const val PAGINATION_PREFETCH_DISTANCE = 4
 
@@ -100,7 +99,7 @@ private fun FavouritesTopBar(
         navigationIcon = {
             IconButton(onClick = onNavigateBack) {
                 Icon(
-                    painter = painterResource(Res.drawable.back),
+                    painter = painterResource(R.drawable.back),
                     contentDescription = "Back",
                 )
             }
@@ -145,7 +144,7 @@ private fun FavouritesContent(
                 FavouritesLoadingContent()
 
             uiState.error != null && uiState.favourites.isEmpty() ->
-                FavouritesErrorContent(error = uiState.error)
+                FavouritesErrorContent(error = uiState.error!!)
 
             uiState.favourites.isEmpty() ->
                 FavouritesEmptyContent()

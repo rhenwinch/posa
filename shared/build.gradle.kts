@@ -7,11 +7,10 @@ import org.jetbrains.kotlin.konan.properties.Properties
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidMultiplatform)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.ktorfit)
+    alias(libs.plugins.kmp.nativeCoroutines)
     alias(libs.plugins.room)
     alias(libs.plugins.buildKonfig)
 }
@@ -28,6 +27,10 @@ ktorfit {
 kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
+    sourceSets.all {
+        languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
     }
 
     android {
@@ -70,26 +73,12 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.compose.runtime)
-            implementation(libs.compose.foundation)
-            implementation(libs.compose.material3)
-            implementation(libs.compose.ui)
-            implementation(libs.compose.components.resources)
-            implementation(libs.compose.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(libs.navigation)
-
-            implementation(libs.coil3)
-            implementation(libs.coil3.ktor3)
-
-            implementation(libs.materialKolor)
-
             api(project.dependencies.platform(libs.koin.bom))
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
-            implementation(libs.koin.compose.viewmodel.navigation)
+            api(libs.koin.core)
+
+            // TODO: Remove these compose dependencies here for better separation of concerns.
+            api(libs.androidx.lifecycle.viewmodelCompose)
+            api(libs.androidx.lifecycle.runtimeCompose)
 
             implementation(libs.ktorfit)
             implementation(libs.ktorfit.converters.response)
@@ -107,17 +96,15 @@ kotlin {
             implementation(libs.kermit)
         }
         commonTest.dependencies {
-            implementation(libs.kotlin.test)
             implementation(libs.junit)
-            implementation(libs.kotlinx.coroutines.test)
             implementation(libs.koin.test)
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
             implementation(libs.turbine)
         }
         androidMain.dependencies {
-            implementation(libs.compose.uiToolingPreview)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.room.sqlite.wrapper)
             api(libs.koin.android)
+            implementation(libs.room.sqlite.wrapper)
         }
     }
 }
@@ -126,8 +113,6 @@ dependencies {
     add("kspAndroid", libs.room.compiler)
     add("kspIosSimulatorArm64", libs.room.compiler)
     add("kspIosArm64", libs.room.compiler)
-
-    androidRuntimeClasspath(libs.compose.uiTooling)
 
     add("androidDeviceTestImplementation", libs.junit)
     add("androidDeviceTestImplementation", libs.androidx.testExt.junit)

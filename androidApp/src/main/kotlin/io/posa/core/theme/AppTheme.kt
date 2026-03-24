@@ -1,36 +1,31 @@
 // Generated using MaterialKolor Builder version 1.3.0 (103)
-// https://materialkolor.com/?color_seed=FF00FFFF&dark_mode=false&style=Expressive&color_spec=SPEC_2025&package_name=com.example.app&expressive=true
+// https://materialkolor.com/?color_seed=FFFFAA69&dark_mode=true&color_spec=SPEC_2025&package_name=io.posa.theme&misc=true
 
-package io.posa.core.theme
+package io.posa.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.MotionScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.materialkolor.DynamicMaterialExpressiveTheme
+import com.materialkolor.DynamicMaterialTheme
 import com.materialkolor.PaletteStyle
 import com.materialkolor.dynamiccolor.ColorSpec
 import com.materialkolor.rememberDynamicMaterialThemeState
+import io.posa.core.theme.Colors
 
-private val seedColor = Color(0xFFFFAA69)
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun AppTheme(
+internal fun AppTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
     val dynamicThemeState = rememberDynamicMaterialThemeState(
         isDark = isDarkTheme,
-        style = PaletteStyle.Expressive,
+        style = PaletteStyle.TonalSpot,
         specVersion = ColorSpec.SpecVersion.SPEC_2025,
-        seedColor = seedColor,
+        seedColor = Color(Colors.Seed),
     )
-    
-    DynamicMaterialExpressiveTheme(
+
+    DynamicMaterialTheme(
         state = dynamicThemeState,
-        motionScheme = MotionScheme.expressive(),
         animate = true,
         content = content,
     )

@@ -1,5 +1,6 @@
 package io.posa.feature.breeds
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.FastOutLinearInEasing
@@ -55,9 +56,11 @@ import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import io.posa.R
 import io.posa.domain.model.breed.CatBadges
 import io.posa.domain.model.breed.CatBreed
 import io.posa.domain.model.breed.CatTraits
@@ -68,10 +71,7 @@ import io.posa.feature.breeds.component.SwipeLikeOverlay
 import io.posa.feature.breeds.component.SwipeNopeOverlay
 import io.posa.feature.breeds.util.getRandomNoSwipeMessage
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
-import posa.shared.generated.resources.Res
-import posa.shared.generated.resources.favourite
 import kotlin.math.abs
 
 private val SWIPE_THRESHOLD_DP = 110.dp
@@ -80,6 +80,7 @@ private const val VISIBLE_CARDS = 3
 private const val BACK_CARD_SCALE_STEP = 0.04f
 private const val BACK_CARD_Y_STEP_DP = 18f
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun BreedsScreen(
@@ -133,7 +134,7 @@ private fun BreedsContent(
                 BreedsLoadingContent()
 
             uiState.error != null && uiState.deck.isEmpty() ->
-                BreedsErrorContent(error = uiState.error)
+                BreedsErrorContent(error = uiState.error!!)
 
             uiState.deck.isEmpty() ->
                 BreedsDeckEmptyContent(reachedEnd = uiState.hasReachedEnd)
@@ -242,7 +243,7 @@ private fun BreedsTopBar(
             ) {
                 IconButton(onClick = onNavigateToFavourites) {
                     Icon(
-                        painter = painterResource(Res.drawable.favourite),
+                        painter = painterResource(R.drawable.favourite),
                         contentDescription = "Favourites",
                         tint = MaterialTheme.colorScheme.tertiary,
                     )
@@ -450,7 +451,7 @@ private fun BreedNameRow(breed: CatBreed) {
 
             if (!breed.altName.isNullOrBlank()) {
                 Text(
-                    text = breed.altName,
+                    text = breed.altName!!,
                     style = MaterialTheme.typography.bodySmall,
                     color = secondaryTextColor,
                 )

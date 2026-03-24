@@ -9,11 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import io.posa.core.theme.AppTheme
 import io.posa.feature.breeds.BreedsScreen
 import io.posa.feature.favourites.FavouritesScreen
+import io.posa.theme.AppTheme
 
-sealed class Screen(val route: String) {
+private sealed class Screen(val route: String) {
     data object Breeds : Screen("breeds")
     data object Favourites : Screen("favourites")
 }
@@ -21,7 +21,7 @@ sealed class Screen(val route: String) {
 private const val NAV_ANIM_DURATION_MS = 380
 
 @Composable
-fun App() {
+internal fun App() {
     val navController = rememberNavController()
 
     AppTheme {

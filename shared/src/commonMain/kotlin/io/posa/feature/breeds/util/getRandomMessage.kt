@@ -1,6 +1,6 @@
 package io.posa.feature.breeds.util
 
-internal fun getRandomNoSwipeMessage(): String {
+fun getRandomNoSwipeMessage(): String {
     return noSwipeMessages.random()
 }
 

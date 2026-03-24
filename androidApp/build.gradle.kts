@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.konan.properties.Properties
 
 plugins {
     alias(libs.plugins.androidApplication)
-    alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
 }
 
@@ -17,10 +16,35 @@ kotlin {
 
 dependencies {
     implementation(projects.shared)
-    implementation(libs.compose.uiToolingPreview)
+
+    val composeBom = platform(libs.compose.bom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
+    // Android Studio Preview support
+    implementation(libs.compose.ui.tooling.preview)
+    debugImplementation(libs.compose.ui.tooling)
+
+    // UI Tests
+    androidTestImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.test.manifest)
+
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.ui)
+    implementation(libs.navigation)
+
+    implementation(libs.coil3)
+    implementation(libs.coil3.ktor3)
+
+    implementation(libs.materialKolor)
+
     implementation(libs.androidx.activity.compose)
 
-    debugImplementation(libs.compose.uiTooling)
+    implementation(libs.koin.compose)
+    implementation(libs.koin.compose.viewmodel)
+    implementation(libs.koin.compose.viewmodel.navigation)
 }
 
 val properties = Properties()
@@ -41,6 +65,7 @@ android {
     }
 
     buildFeatures {
+        compose = true
         buildConfig = true
     }
 
@@ -59,4 +84,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+}
+
+composeCompiler {
+    reportsDestination = layout.buildDirectory.dir("compose_compiler")
+    stabilityConfigurationFiles.set(
+        listOf(rootProject.layout.projectDirectory.file("stability_config.conf"))
+    )
 }

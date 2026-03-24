@@ -1,8 +1,10 @@
 package io.posa.feature.favourites
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
+import com.rickclephas.kmp.nativecoroutines.NativeCoroutines
 import io.posa.core.common.Async
 import io.posa.core.common.enum.SortOrder
 import io.posa.domain.model.favourite.FavouriteImage
@@ -19,7 +21,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-internal data class FavouritesUiState(
+@Stable
+data class FavouritesUiState(
     val favourites: List<FavouriteImage> = emptyList(),
     val isLoading: Boolean = false,
     val isPaginating: Boolean = false,
@@ -28,12 +31,16 @@ internal data class FavouritesUiState(
     val hasReachedEnd: Boolean = false,
 )
 
-internal sealed interface FavouritesEvent {
+
+sealed interface FavouritesEvent {
+    @Stable
     data object FavouriteRemoved : FavouritesEvent
+
+    @Stable
     data class ShowError(val message: String) : FavouritesEvent
 }
 
-internal class FavouritesViewModel(
+class FavouritesViewModel(
     private val getFavourites: GetFavourites,
     private val removeFromFavourites: RemoveFromFavourites,
 ) : ViewModel() {
@@ -46,9 +53,11 @@ internal class FavouritesViewModel(
     private var currentPage = 0
 
     private val _uiState = MutableStateFlow(FavouritesUiState())
+    @NativeCoroutines
     val uiState: StateFlow<FavouritesUiState> = _uiState.asStateFlow()
 
     private val _events = MutableSharedFlow<FavouritesEvent>()
+    @NativeCoroutines
     val events: SharedFlow<FavouritesEvent> = _events.asSharedFlow()
 
     init {

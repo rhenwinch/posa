@@ -1,8 +1,10 @@
 package io.posa.feature.breeds
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
+import com.rickclephas.kmp.nativecoroutines.NativeCoroutines
 import io.posa.core.common.Async
 import io.posa.core.common.enum.SortOrder
 import io.posa.domain.model.breed.CatBreed
@@ -17,7 +19,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-internal data class BreedsUiState(
+@Stable
+data class BreedsUiState(
     val deck: List<CatBreed> = emptyList(),
     val isLoading: Boolean = false,
     val isPrefetching: Boolean = false,
@@ -25,15 +28,18 @@ internal data class BreedsUiState(
     val hasReachedEnd: Boolean = false,
 )
 
-internal sealed interface BreedsEvent {
+sealed interface BreedsEvent {
+    @Stable
     data object FavouriteAdded : BreedsEvent
 
+    @Stable
     data object DismissedButHellNah : BreedsEvent
 
+    @Stable
     data class ShowError(val message: String) : BreedsEvent
 }
 
-internal class BreedsViewModel(
+class BreedsViewModel(
     private val getCatBreeds: GetCatBreeds,
     private val addToFavourites: AddToFavourites,
 ) : ViewModel() {
@@ -47,9 +53,12 @@ internal class BreedsViewModel(
     private var currentPage = 0
 
     private val _uiState = MutableStateFlow(BreedsUiState())
+    @NativeCoroutines
     val uiState: StateFlow<BreedsUiState> = _uiState.asStateFlow()
 
     private val _events = MutableSharedFlow<BreedsEvent>()
+
+    @NativeCoroutines
     val events: SharedFlow<BreedsEvent> = _events.asSharedFlow()
 
     init {
