@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,7 +27,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -42,13 +40,8 @@ import io.posa.feature.favourites.component.FavouriteCard
 import io.posa.feature.favourites.component.FavouritesEmptyContent
 import io.posa.feature.favourites.component.FavouritesErrorContent
 import io.posa.feature.favourites.component.FavouritesLoadingContent
-import io.posa.feature.favourites.component.PaginationFooter
 import io.posa.feature.favourites.component.SortOrderToggle
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import org.koin.compose.viewmodel.koinViewModel
-
-private const val PAGINATION_PREFETCH_DISTANCE = 4
 
 @Composable
 internal fun FavouritesScreen(
@@ -81,8 +74,7 @@ internal fun FavouritesScreen(
     ) { innerPadding ->
         FavouritesContent(
             uiState = uiState,
-            onRemoveCard = viewModel::removeCard,
-            onLoadNextPage = viewModel::loadNextPage,
+            onRemoveCard = viewModel::remove,
             onSortOrderChange = viewModel::onSortOrderChange,
             modifier = Modifier.padding(innerPadding),
         )
@@ -134,7 +126,6 @@ private fun FavouritesTopBar(
 private fun FavouritesContent(
     uiState: FavouritesUiState,
     onRemoveCard: (FavouriteImage) -> Unit,
-    onLoadNextPage: () -> Unit,
     modifier: Modifier = Modifier,
     onSortOrderChange: (SortOrder) -> Unit,
 ) {
@@ -153,7 +144,6 @@ private fun FavouritesContent(
                 FavouritesGridContent(
                     uiState = uiState,
                     onRemoveCard = onRemoveCard,
-                    onLoadNextPage = onLoadNextPage,
                     onSortOrderChange = onSortOrderChange
                 )
         }
@@ -164,27 +154,10 @@ private fun FavouritesContent(
 private fun FavouritesGridContent(
     uiState: FavouritesUiState,
     onRemoveCard: (FavouriteImage) -> Unit,
-    onLoadNextPage: () -> Unit,
     onSortOrderChange: (SortOrder) -> Unit,
 ) {
-    val gridState = rememberLazyGridState()
-
-    LaunchedEffect(gridState) {
-        snapshotFlow {
-            val lastVisible = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
-            val total = gridState.layoutInfo.totalItemsCount
-            lastVisible to total
-        }
-            .distinctUntilChanged()
-            .filter { (lastVisible, total) ->
-                total > 0 && lastVisible >= total - PAGINATION_PREFETCH_DISTANCE
-            }
-            .collect { onLoadNextPage() }
-    }
-
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        state = gridState,
+        columns = GridCells.Adaptive(160.dp),
         contentPadding = PaddingValues(
             start = 16.dp,
             end = 16.dp,
@@ -213,13 +186,7 @@ private fun FavouritesGridContent(
             )
         }
 
-        if (uiState.isPaginating) {
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                PaginationFooter()
-            }
-        }
-
-        if (uiState.hasReachedEnd && uiState.favourites.isNotEmpty()) {
+        if (uiState.favourites.isNotEmpty()) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 EndOfListLabel()
             }

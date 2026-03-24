@@ -23,13 +23,9 @@ class FavouriteImageRepositoryImpl(
     }
 
     override fun getFavouriteImages(
-        page: Int,
-        limit: Int,
         sortOrder: SortOrder
     ): Flow<List<FavouriteImage>> {
         return local.getFavourites(
-            page = page,
-            limit = limit,
             sortOrder = sortOrder
         )
     }

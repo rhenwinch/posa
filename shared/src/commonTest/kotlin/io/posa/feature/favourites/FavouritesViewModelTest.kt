@@ -113,7 +113,7 @@ class FavouritesViewModelTest {
     }
 
     @Test
-    fun removeCard_emitsFavouriteRemoved_andRemovesItemFromUi() = runViewModelTest testScope@{
+    fun remove_emitsFavouriteRemoved_andRemovesItemFromUi() = runViewModelTest testScope@{
         val initial = testFavourites(start = 1L, count = 3)
         val repository = FakeFavouriteImageRepository().apply {
             getFavouriteFlows += flowOf(initial)
@@ -127,7 +127,7 @@ class FavouritesViewModelTest {
         val target = initial[1]
 
         viewModel.events.test {
-            viewModel.removeCard(target)
+            viewModel.remove(target)
             this@testScope.advanceUntilIdle()
 
             assertEquals(FavouritesEvent.FavouriteRemoved, awaitItem())
@@ -155,7 +155,7 @@ class FavouritesViewModelTest {
         val target = initial[1]
 
         viewModel.events.test {
-            viewModel.removeCard(target)
+            viewModel.remove(target)
             this@testScope.advanceUntilIdle()
 
             val event = awaitItem()

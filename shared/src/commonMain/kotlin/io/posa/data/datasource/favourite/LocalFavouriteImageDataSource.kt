@@ -1,7 +1,6 @@
 package io.posa.data.datasource.favourite
 
 import io.posa.core.common.enum.SortOrder
-import io.posa.core.database.dao.CatBreedDao
 import io.posa.core.database.dao.FavouriteImageDao
 import io.posa.core.database.entity.favourite.FavouriteImageEntity
 import io.posa.domain.datasource.FavouriteImageDataSource
@@ -19,20 +18,12 @@ class LocalFavouriteImageDataSource(
     }
 
     override fun getFavourites(
-        page: Int,
-        limit: Int,
         sortOrder: SortOrder,
     ): Flow<List<FavouriteImage>> {
         val listFlow = if (sortOrder.isDescending) {
-            favouritesDao.getAllDescAsFlow(
-                page = page,
-                limit = limit,
-            )
+            favouritesDao.getAllDescAsFlow()
         } else {
-            favouritesDao.getAllAscAsFlow(
-                page = page,
-                limit = limit,
-            )
+            favouritesDao.getAllAscAsFlow()
         }
 
         return listFlow.mapLatest { list ->

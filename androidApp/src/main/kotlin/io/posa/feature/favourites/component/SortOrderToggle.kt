@@ -26,13 +26,13 @@ internal fun SortOrderToggle(
 ) {
     Row(modifier = modifier) {
         SortChip(
-            label = "Name",
+            label = "Asc",
             selected = sortOrder.isAscending,
             onClick = { onSortOrderChange(SortOrder.ASC) },
         )
 
         SortChip(
-            label = "Added on",
+            label = "Desc",
             selected = sortOrder.isDescending,
             onClick = { onSortOrderChange(SortOrder.DESC) },
         )

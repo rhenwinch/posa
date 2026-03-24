@@ -28,14 +28,12 @@ class FavouriteImageRepositoryImplTest {
         val remote = FakeFavouriteImageDataSource()
         val repository = FavouriteImageRepositoryImpl(remote = remote, local = local)
 
-        repository.getFavouriteImages(page = 2, limit = 5, sortOrder = SortOrder.ASC).test {
+        repository.getFavouriteImages(sortOrder = SortOrder.ASC).test {
             assertEquals(listOf(first, second), awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
 
         assertEquals(1, local.getFavouritesCallCount)
-        assertEquals(2, local.requestedPage)
-        assertEquals(5, local.requestedLimit)
         assertEquals(SortOrder.ASC, local.requestedSortOrder)
         assertEquals(0, remote.getFavouritesCallCount)
     }
@@ -162,8 +160,6 @@ class FavouriteImageRepositoryImplTest {
 
         var getFavouritesCallCount: Int = 0
         var getPendingSyncCallCount: Int = 0
-        var requestedPage: Int? = null
-        var requestedLimit: Int? = null
         var requestedSortOrder: SortOrder? = null
 
         var throwOnAdd: Boolean = false
@@ -175,15 +171,15 @@ class FavouriteImageRepositoryImplTest {
         val removedIds = mutableListOf<Long>()
 
         override fun getFavourites(
-            page: Int,
-            limit: Int,
             sortOrder: SortOrder,
         ): Flow<List<FavouriteImage>> {
             getFavouritesCallCount += 1
-            requestedPage = page
-            requestedLimit = limit
             requestedSortOrder = sortOrder
             return favouritesFlow
+        }
+
+        override suspend fun isFavourite(breedId: String): Boolean {
+            TODO("Not yet implemented")
         }
 
         override suspend fun addFavourite(data: FavouriteImage): Long {

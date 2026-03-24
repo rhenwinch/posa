@@ -4,7 +4,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import io.posa.core.database.entity.breed.CatBreedEntity
 import io.posa.domain.model.breed.CatBadges
 
 @Entity(

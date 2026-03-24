@@ -6,8 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface FavouriteImageDataSource {
     fun getFavourites(
-        page: Int,
-        limit: Int,
         sortOrder: SortOrder,
     ): Flow<List<FavouriteImage>>
 

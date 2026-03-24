@@ -4,10 +4,10 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import io.posa.core.common.enum.SortOrder
 import io.posa.core.datastore.PosaDataStore
-import io.posa.domain.datasource.FavouriteImageDataSource
-import io.posa.domain.model.favourite.FavouriteImage
 import io.posa.core.network.TheCatApiService
 import io.posa.core.network.dto.FavouriteRequestDto
+import io.posa.domain.datasource.FavouriteImageDataSource
+import io.posa.domain.model.favourite.FavouriteImage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -25,8 +25,6 @@ class RemoteFavouriteImageDataSource(
     }
 
     override fun getFavourites(
-        page: Int,
-        limit: Int,
         sortOrder: SortOrder,
     ): Flow<List<FavouriteImage>> {
         return dataStore.data
@@ -36,8 +34,8 @@ class RemoteFavouriteImageDataSource(
 
                 api.getFavourites(
                     userId = userId,
-                    page = page,
-                    limit = limit,
+                    page = 1, // Hardcoded as we will never use this tho
+                    limit = 10, // Hardcoded as we will never use this tho
                     order = if (sortOrder.isDescending) "DESC" else "ASC"
                 ).map { list ->
                     list.map { dto -> dto.toDomain() }

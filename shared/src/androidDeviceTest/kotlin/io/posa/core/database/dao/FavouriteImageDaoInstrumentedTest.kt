@@ -79,50 +79,15 @@ class FavouriteImageDaoInstrumentedTest {
             )
         )
 
-        val descIds = favouriteImageDao.getAllDescAsFlow(
-            page = FIRST_PAGE,
-            limit = 10
-        )
+        val descIds = favouriteImageDao.getAllDescAsFlow()
             .first()
             .map { it.favouriteImage.id }
-        val ascIds = favouriteImageDao.getAllAscAsFlow(
-            page = FIRST_PAGE,
-            limit = 10
-        )
+        val ascIds = favouriteImageDao.getAllAscAsFlow()
             .first()
             .map { it.favouriteImage.id }
 
         assertEquals(listOf(2L, 3L, 1L), descIds)
         assertEquals(listOf(1L, 3L, 2L), ascIds)
-    }
-
-    @Test
-    fun getAllDescAsFlow_appliesPageAndLimit_forPaginatedFeed() = runTest {
-        (1L..5L).forEach { id ->
-            favouriteImageDao.add(
-                favouriteImage = favouriteEntity(
-                    id = id,
-                    imageId = "img-$id",
-                    createdAt = 1_700_000_000_000L + (id * 1_000)
-                )
-            )
-        }
-
-        val firstPageIds = favouriteImageDao.getAllDescAsFlow(
-            page = FIRST_PAGE,
-            limit = 2
-        )
-            .first()
-            .map { it.favouriteImage.id }
-        val secondPageIds = favouriteImageDao.getAllDescAsFlow(
-            page = SECOND_PAGE,
-            limit = 2
-        )
-            .first()
-            .map { it.favouriteImage.id }
-
-        assertEquals(listOf(5L, 4L), firstPageIds)
-        assertEquals(listOf(3L, 2L), secondPageIds)
     }
 
     @Test
@@ -147,10 +112,7 @@ class FavouriteImageDaoInstrumentedTest {
 
         favouriteImageDao.add(favouriteImage = updated)
 
-        val stored = favouriteImageDao.getAllDescAsFlow(
-            page = FIRST_PAGE,
-            limit = 1
-        ).first()
+        val stored = favouriteImageDao.getAllDescAsFlow().first()
 
         assertFalse(favouriteImageDao.isFavourite(breedId = "img-10"))
         assertTrue(favouriteImageDao.isFavourite(breedId = "img-10-v2"))
@@ -277,7 +239,5 @@ class FavouriteImageDaoInstrumentedTest {
 
     private companion object {
         const val DEFAULT_BREED_ID = "abys"
-        const val FIRST_PAGE = 0
-        const val SECOND_PAGE = 1
     }
 }

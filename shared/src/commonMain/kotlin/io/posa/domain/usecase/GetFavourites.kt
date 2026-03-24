@@ -17,19 +17,16 @@ class GetFavourites(
         val log = Logger.withTag("GetFavourites")
     }
 
-    operator fun invoke(page: Int, sortOrder: SortOrder): Flow<Async<List<FavouriteImage>>> {
-        val flow: Flow<Async<List<FavouriteImage>>> = repository.getFavouriteImages(
-            page = page,
-            sortOrder = sortOrder
-        ).map {
-            Async.Success(it)
+    operator fun invoke(sortOrder: SortOrder): Flow<Async<List<FavouriteImage>>> {
+        val flow = repository.getFavouriteImages(sortOrder = sortOrder).map {
+            Async.Success(it) as Async<List<FavouriteImage>>
         }
 
         return flow
             .onStart { emit(Async.Loading) }
             .catch { error ->
                 log.e(error) {
-                    "Failed to get favourite images for page $page and sort order $sortOrder"
+                    "Failed to get favourite images with sort order $sortOrder"
                 }
 
                 emit(Async.Fail(error))

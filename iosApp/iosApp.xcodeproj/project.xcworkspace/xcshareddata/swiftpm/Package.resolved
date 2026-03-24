@@ -1,0 +1,33 @@
+{
+  "originHash" : "6a7e07f01c90f72307ba71ef1a6af8df28bfb3463cb40a4d9a66dcd201cb64ab",
+  "pins" : [
+    {
+      "identity" : "kmp-nativecoroutines",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rickclephas/KMP-NativeCoroutines",
+      "state" : {
+        "revision" : "fce8c8d25b874b2038be81bb3ba5cc51af1a976f",
+        "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "nuke",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kean/Nuke",
+      "state" : {
+        "revision" : "569994959b7b8a79559cd6237cab788c1ff9a420",
+        "version" : "13.0.0"
+      }
+    },
+    {
+      "identity" : "rxswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveX/RxSwift.git",
+      "state" : {
+        "revision" : "132aea4f236ccadc51590b38af0357a331d51fa2",
+        "version" : "6.10.2"
+      }
+    }
+  ],
+  "version" : 3
+}

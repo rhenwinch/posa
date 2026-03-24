@@ -18,13 +18,9 @@ interface FavouriteImageDao {
         SELECT * FROM favourite_images
         WHERE syncStatus != 'PENDING_DELETE'
         ORDER BY createdAt DESC
-        LIMIT :limit OFFSET (:page * :limit)
         """
     )
-    fun getAllDescAsFlow(
-        page: Int,
-        limit: Int
-    ): Flow<List<FavouriteImageWithBreed>>
+    fun getAllDescAsFlow(): Flow<List<FavouriteImageWithBreed>>
 
     @Transaction
     @Query(
@@ -32,13 +28,9 @@ interface FavouriteImageDao {
         SELECT * FROM favourite_images
         WHERE syncStatus != 'PENDING_DELETE'
         ORDER BY createdAt ASC
-        LIMIT :limit OFFSET (:page * :limit)
         """
     )
-    fun getAllAscAsFlow(
-        page: Int,
-        limit: Int
-    ): Flow<List<FavouriteImageWithBreed>>
+    fun getAllAscAsFlow(): Flow<List<FavouriteImageWithBreed>>
 
     @Query("SELECT EXISTS(SELECT 1 FROM favourite_images WHERE breedId = :breedId)")
     suspend fun isFavourite(breedId: String): Boolean

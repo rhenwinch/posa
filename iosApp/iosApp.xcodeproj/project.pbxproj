@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2348C0B42F72E9090023E7E1 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 2348C0B32F72E9090023E7E1 /* NukeUI */; };
+		9B1A61C8A6D24C0F9EDE0E03 /* KMPNativeCoroutinesCombine in Frameworks */ = {isa = PBXBuildFile; productRef = 9B1A61C8A6D24C0F9EDE0E02 /* KMPNativeCoroutinesCombine */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		51D28F76D0AECEE721BF36D5 /* Posa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Posa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -41,6 +46,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B1A61C8A6D24C0F9EDE0E03 /* KMPNativeCoroutinesCombine in Frameworks */,
+				2348C0B42F72E9090023E7E1 /* NukeUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,6 +93,8 @@
 			);
 			name = iosApp;
 			packageProductDependencies = (
+				9B1A61C8A6D24C0F9EDE0E02 /* KMPNativeCoroutinesCombine */,
+				2348C0B32F72E9090023E7E1 /* NukeUI */,
 			);
 			productName = iosApp;
 			productReference = 51D28F76D0AECEE721BF36D5 /* Posa.app */;
@@ -116,6 +125,9 @@
 			mainGroup = 34E09290EC24B7B24FAEF2E1;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				9B1A61C8A6D24C0F9EDE0E01 /* XCRemoteSwiftPackageReference "KMP-NativeCoroutines" */,
+				2348C0B22F72E9090023E7E1 /* XCRemoteSwiftPackageReference "Nuke" */,
+				2348C0B52F72EC930023E7E1 /* XCLocalSwiftPackageReference "../shared" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A2A1860D8A967BA535C231D2 /* Products */;
@@ -387,6 +399,45 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		2348C0B52F72EC930023E7E1 /* XCLocalSwiftPackageReference "../shared" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../shared;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2348C0B22F72E9090023E7E1 /* XCRemoteSwiftPackageReference "Nuke" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/Nuke";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 13.0.0;
+			};
+		};
+		9B1A61C8A6D24C0F9EDE0E01 /* XCRemoteSwiftPackageReference "KMP-NativeCoroutines" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rickclephas/KMP-NativeCoroutines.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2348C0B32F72E9090023E7E1 /* NukeUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2348C0B22F72E9090023E7E1 /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = NukeUI;
+		};
+		9B1A61C8A6D24C0F9EDE0E02 /* KMPNativeCoroutinesCombine */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9B1A61C8A6D24C0F9EDE0E01 /* XCRemoteSwiftPackageReference "KMP-NativeCoroutines" */;
+			productName = KMPNativeCoroutinesCombine;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F67C3EA286702EB721E6AD57 /* Project object */;
 }
