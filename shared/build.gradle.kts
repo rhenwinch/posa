@@ -146,46 +146,46 @@ buildkonfig {
     }
 }
 
-tasks.named("assemble") {
-    dependsOn("assembleXCFramework")
-}
-
-tasks.named("assembleXCFramework") {
-    finalizedBy("generatePackageSwift")
-}
-
-val xcFrameworkPath = "build/XCFrameworks/release/shared.xcframework"
-tasks.register("generatePackageSwift") {
-    group = "build"
-    description = "Generates Package.swift for Swift Package Manager"
-
-    doLast {
-        val packageSwiftContent = """
-            import PackageDescription
-
-            let package = Package(
-                name: "shared",
-                platforms: [
-                    .iOS(.v14)
-                ],
-                products: [
-                    .library(
-                        name: "shared",
-                        targets: ["shared"]
-                    )
-                ],
-
-                targets: [
-                    .binaryTarget(
-                        name: "shared",
-                        path: "./$xcFrameworkPath"
-                    )
-                ]
-            )
-        """.trimIndent()
-
-        val packageSwiftFile = File("$projectDir/Package.swift")
-        packageSwiftFile.writeText(packageSwiftContent)
-        println("✅ Package.swift updated successfully.")
-    }
-}
+//tasks.named("assemble") {
+//    dependsOn("assembleXCFramework")
+//}
+//
+//tasks.named("assembleXCFramework") {
+//    finalizedBy("generatePackageSwift")
+//}
+//
+//val xcFrameworkPath = "build/XCFrameworks/release/shared.xcframework"
+//tasks.register("generatePackageSwift") {
+//    group = "build"
+//    description = "Generates Package.swift for Swift Package Manager"
+//
+//    doLast {
+//        val packageSwiftContent = """
+//            import PackageDescription
+//
+//            let package = Package(
+//                name: "shared",
+//                platforms: [
+//                    .iOS(.v14)
+//                ],
+//                products: [
+//                    .library(
+//                        name: "shared",
+//                        targets: ["shared"]
+//                    )
+//                ],
+//
+//                targets: [
+//                    .binaryTarget(
+//                        name: "shared",
+//                        path: "./$xcFrameworkPath"
+//                    )
+//                ]
+//            )
+//        """.trimIndent()
+//
+//        val packageSwiftFile = File("$projectDir/Package.swift")
+//        packageSwiftFile.writeText(packageSwiftContent)
+//        println("✅ Package.swift updated successfully.")
+//    }
+//}
