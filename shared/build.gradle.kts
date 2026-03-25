@@ -64,7 +64,7 @@ kotlin {
     ).forEach {
         it.binaries.framework {
             baseName = "shared"
-            isStatic = true
+            // isStatic = true // Commented to make SwiftUI previews work. See https://github.com/JetBrains/kotlin-native/issues/3059#issuecomment-501699248
             xcFramework.add(this)
             // Required when using NativeSQLiteDriver
             linkerOpts.add("-lsqlite3")
