@@ -13,6 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 
 private val NopeRed = Color(0xFFFF4D4D)
@@ -31,7 +34,10 @@ internal fun SwipeNopeOverlay(offsetX: Animatable<Float, AnimationVector1D>) {
             text = "NOPE",
             color = NopeRed,
             rotation = 22f,
-            modifier = Modifier.padding(22.dp),
+            modifier = Modifier
+                .padding(22.dp)
+                .testTag("breeds:overlay:nope")
+                .semantics { contentDescription = "Nope" },
         )
     }
 }

@@ -56,7 +56,12 @@ import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -108,6 +113,7 @@ internal fun BreedsScreen(
     }
 
     Scaffold(
+        modifier = Modifier.testTag("breeds:screen"),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             BreedsTopBar(onNavigateToFavourites = onNavigateToFavourites)
@@ -128,7 +134,11 @@ private fun BreedsContent(
     onSwipeRight: (CatBreed) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .testTag("breeds:content"),
+    ) {
         when {
             uiState.isLoading && uiState.deck.isEmpty() ->
                 BreedsLoadingContent()
@@ -169,7 +179,9 @@ private fun BreedsDeckContent(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("breeds:deck"),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
@@ -241,7 +253,12 @@ private fun BreedsTopBar(
                 badge = {},
                 modifier = Modifier.padding(end = 4.dp),
             ) {
-                IconButton(onClick = onNavigateToFavourites) {
+                IconButton(
+                    onClick = onNavigateToFavourites,
+                    modifier = Modifier
+                        .testTag("breeds:topBar:favouritesButton")
+                        .semantics { role = Role.Button },
+                ) {
                     Icon(
                         painter = painterResource(R.drawable.favourite),
                         contentDescription = "Favourites",
@@ -270,6 +287,10 @@ private fun BreedTopCard(
 
     Box(
         modifier = modifier
+            .testTag("breeds:card:top:${breed.id}")
+            .semantics(mergeDescendants = true) {
+                contentDescription = "Breed card ${breed.name}"
+            }
             .graphicsLayer {
                 translationX = offsetX.value
                 translationY = offsetY.value
@@ -365,7 +386,12 @@ private fun BreedBackCard(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier.graphicsLayer {
+        modifier = modifier
+            .testTag("breeds:card:back:${breed.id}")
+            .semantics(mergeDescendants = true) {
+                contentDescription = "Breed card ${breed.name}"
+            }
+            .graphicsLayer {
             val scale = 1f - depthIndex * BACK_CARD_SCALE_STEP
             scaleX = scale
             scaleY = scale

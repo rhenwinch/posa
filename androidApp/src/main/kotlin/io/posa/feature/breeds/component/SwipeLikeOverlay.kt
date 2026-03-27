@@ -13,6 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 
 private val LikeGreen = Color(0xFF44C766)
@@ -31,7 +34,10 @@ internal fun SwipeLikeOverlay(offsetX: Animatable<Float, AnimationVector1D>) {
             text = "LIKE",
             color = LikeGreen,
             rotation = -22f,
-            modifier = Modifier.padding(22.dp),
+            modifier = Modifier
+                .padding(22.dp)
+                .testTag("breeds:overlay:like")
+                .semantics { contentDescription = "Like" },
         )
     }
 }

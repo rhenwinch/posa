@@ -12,12 +12,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
 
 @Composable
 internal fun FavouritesLoadingContent() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("favourites:loading"),
+        contentAlignment = Alignment.Center,
+    ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             CircularProgressIndicator(color = MaterialTheme.colorScheme.tertiary, strokeWidth = 3.dp)
             Spacer(modifier = Modifier.height(16.dp))

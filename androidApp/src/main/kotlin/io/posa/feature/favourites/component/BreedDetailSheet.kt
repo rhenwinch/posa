@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,11 +52,14 @@ internal fun BreedDetailSheet(breed: CatBreed) {
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
+            .testTag("breedDetail:root")
     ) {
         HeroImage(imageUrl = breed.imageUrl)
 
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier
+                .padding(20.dp)
+                .testTag("breedDetail:content"),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             BreedHeaderSection(breed)
@@ -104,6 +108,7 @@ private fun BreedHeaderSection(breed: CatBreed) {
 private fun TemperamentsSection(temperaments: List<String>) {
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
+        modifier = Modifier.testTag("breedDetail:temperaments"),
     ) {
         temperaments.forEach { tag ->
             SuggestionChip(
@@ -111,6 +116,7 @@ private fun TemperamentsSection(temperaments: List<String>) {
                 label = {
                     Text(text = tag, style = MaterialTheme.typography.labelSmall)
                 },
+                modifier = Modifier.testTag("breedDetail:temperament:${tag.lowercase().replace(' ', '_')}"),
             )
         }
     }
@@ -131,7 +137,10 @@ private fun TraitsSection(traits: CatTraits) {
         )
     }
 
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = Modifier.testTag("breedDetail:traits"),
+    ) {
         SectionLabel("Traits")
         rows.forEach { (name, value) ->
             TraitRow(name = name, value = value)
@@ -149,7 +158,8 @@ private fun TraitRow(name: String, value: Int) {
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = Modifier.testTag("breedDetail:trait:${name.lowercase().replace(' ', '_')}")
     ) {
         Text(
             text = name,
@@ -189,7 +199,10 @@ private fun BadgesSection(badges: CatBadges) {
         )
     }
 
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = Modifier.testTag("breedDetail:badges"),
+    ) {
         SectionLabel("Badges")
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -228,7 +241,9 @@ private fun BadgePill(label: String, active: Boolean) {
         colors = SuggestionChipDefaults.suggestionChipColors(
             containerColor = containerColor
         ),
-        modifier = Modifier.heightIn(min = 25.dp)
+        modifier = Modifier
+            .heightIn(min = 25.dp)
+            .testTag("breedDetail:badge:${label.lowercase().replace(' ', '_')}")
     )
 }
 

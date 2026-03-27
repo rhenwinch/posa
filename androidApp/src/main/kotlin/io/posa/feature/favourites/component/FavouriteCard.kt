@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -109,7 +110,9 @@ internal fun FavouriteCard(
             ) {
                 IconButton(
                     onClick = { isBeingRemoved = true },
-                    modifier = Modifier.size(28.dp),
+                    modifier = Modifier
+                        .size(28.dp)
+                        .testTag("favourites:item:${favourite.imageId}:remove"),
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.unfavourite),

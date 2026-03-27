@@ -14,6 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.posa.core.common.enum.SortOrder
@@ -24,17 +29,19 @@ internal fun SortOrderToggle(
     onSortOrderChange: (SortOrder) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(modifier = modifier) {
+    Row(modifier = modifier.testTag("favourites:sortOrder:toggle")) {
         SortChip(
             label = "Asc",
             selected = sortOrder.isAscending,
             onClick = { onSortOrderChange(SortOrder.ASC) },
+            modifier = Modifier.testTag("favourites:sortOrder:asc"),
         )
 
         SortChip(
             label = "Desc",
             selected = sortOrder.isDescending,
             onClick = { onSortOrderChange(SortOrder.DESC) },
+            modifier = Modifier.testTag("favourites:sortOrder:desc"),
         )
     }
 }
@@ -45,6 +52,7 @@ private fun SortChip(
     label: String,
     selected: Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val selectedColor = MaterialTheme.colorScheme.primaryContainer
     val selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -66,6 +74,10 @@ private fun SortChip(
         color = bgColor,
         contentColor = contentColorFor(bgColor),
         onClick = onClick,
+        modifier = modifier.semantics {
+            this.selected = selected
+            role = Role.Button
+        },
     ) {
         Text(
             text = label,

@@ -33,7 +33,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.posa.R
@@ -73,6 +77,7 @@ internal fun FavouritesScreen(
     }
 
     Scaffold(
+        modifier = Modifier.testTag("favourites:screen"),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             FavouritesTopBar(
@@ -92,7 +97,8 @@ internal fun FavouritesScreen(
 
     if (clickedBreed != null) {
         ModalBottomSheet(
-            onDismissRequest = { clickedBreed = null }
+            onDismissRequest = { clickedBreed = null },
+            modifier = Modifier.testTag("favourites:detailSheet"),
         ) {
             BreedDetailSheet(
                 breed = clickedBreed!!,
@@ -109,7 +115,12 @@ private fun FavouritesTopBar(
 ) {
     TopAppBar(
         navigationIcon = {
-            IconButton(onClick = onNavigateBack) {
+            IconButton(
+                onClick = onNavigateBack,
+                modifier = Modifier
+                    .testTag("favourites:topBar:backButton")
+                    .semantics { role = Role.Button },
+            ) {
                 Icon(
                     painter = painterResource(R.drawable.back),
                     contentDescription = "Back",
@@ -189,12 +200,15 @@ private fun FavouritesGridContent(
         ),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("favourites:grid"),
     ) {
         item(span = { GridItemSpan(maxLineSpan) }) {
             SortOrderToggle(
                 sortOrder = uiState.sortOrder,
                 onSortOrderChange = onSortOrderChange,
+                modifier = Modifier.testTag("favourites:sortOrder"),
             )
         }
 
@@ -205,7 +219,10 @@ private fun FavouritesGridContent(
             FavouriteCard(
                 favourite = favourite,
                 onRemove = { onRemoveCard(favourite) },
-                modifier = Modifier.animateItem()
+                modifier = Modifier
+                    .animateItem()
+                    .testTag("favourites:item:${favourite.imageId}")
+                    .semantics { role = Role.Button }
                     .clickable {
                         onViewCard(favourite)
                     },
