@@ -106,12 +106,14 @@ internal fun BreedsScreen(
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-private fun BreedsScreenContent(
+internal fun BreedsScreenContent(
     uiState: BreedsUiState,
     events: SharedFlow<BreedsEvent>,
     onNavigateToFavourites: () -> Unit,
     onSwipeRight: (CatBreed) -> Unit,
     onSwipeLeft: (CatBreed) -> Unit,
+    favouriteAddedMessage: String = "Added to favourites ❤️",
+    trollMessageProvider: () -> String = ::getRandomNoSwipeMessage,
     modifier: Modifier = Modifier
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -122,10 +124,10 @@ private fun BreedsScreenContent(
 
             when (event) {
                 is BreedsEvent.FavouriteAdded ->
-                    snackbarHostState.showSnackbar("Added to favourites ❤️")
+                    snackbarHostState.showSnackbar(favouriteAddedMessage)
 
                 is BreedsEvent.DismissedButHellNah ->
-                    snackbarHostState.showSnackbar(getRandomNoSwipeMessage())
+                    snackbarHostState.showSnackbar(trollMessageProvider())
 
                 is BreedsEvent.ShowError ->
                     snackbarHostState.showSnackbar(event.message)
@@ -426,7 +428,7 @@ private fun BreedBackCard(
 }
 
 @Composable
-private fun BreedCardContent(
+internal fun BreedCardContent(
     breed: CatBreed,
     isInteractive: Boolean = true,
 ) {

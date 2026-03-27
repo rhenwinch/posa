@@ -27,6 +27,8 @@ dependencies {
 
     // UI Tests
     androidTestImplementation(libs.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.testExt.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
     debugImplementation(libs.compose.ui.test.manifest)
 
     implementation(libs.compose.runtime)
@@ -60,6 +62,8 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "CAT_API_KEY", "\"${properties.getProperty("CAT_API_KEY")}\"")
     }

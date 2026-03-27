@@ -29,7 +29,7 @@ internal fun SortOrderToggle(
     onSortOrderChange: (SortOrder) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(modifier = modifier.testTag("favourites:sortOrder:toggle")) {
+    Row(modifier = modifier) {
         SortChip(
             label = "Asc",
             selected = sortOrder.isAscending,

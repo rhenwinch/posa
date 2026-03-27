@@ -73,7 +73,7 @@ internal fun FavouritesScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FavouritesScreenContent(
+internal fun FavouritesScreenContent(
     uiState: FavouritesUiState,
     onNavigateBack: () -> Unit,
     onRemoveCard: (FavouriteImage) -> Unit,
