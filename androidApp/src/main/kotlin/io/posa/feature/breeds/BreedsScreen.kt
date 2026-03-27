@@ -62,6 +62,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -75,6 +76,7 @@ import io.posa.feature.breeds.component.BreedsLoadingContent
 import io.posa.feature.breeds.component.SwipeLikeOverlay
 import io.posa.feature.breeds.component.SwipeNopeOverlay
 import io.posa.feature.breeds.util.getRandomNoSwipeMessage
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.abs
@@ -85,7 +87,6 @@ private const val VISIBLE_CARDS = 3
 private const val BACK_CARD_SCALE_STEP = 0.04f
 private const val BACK_CARD_Y_STEP_DP = 18f
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun BreedsScreen(
@@ -93,10 +94,30 @@ internal fun BreedsScreen(
     onNavigateToFavourites: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    BreedsScreenContent(
+        uiState = uiState,
+        events = viewModel.events,
+        onNavigateToFavourites = onNavigateToFavourites,
+        onSwipeRight = viewModel::swipeRight,
+        onSwipeLeft = viewModel::swipeLeft,
+    )
+}
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+private fun BreedsScreenContent(
+    uiState: BreedsUiState,
+    events: SharedFlow<BreedsEvent>,
+    onNavigateToFavourites: () -> Unit,
+    onSwipeRight: (CatBreed) -> Unit,
+    onSwipeLeft: (CatBreed) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
+        events.collect { event ->
             snackbarHostState.currentSnackbarData?.dismiss()
 
             when (event) {
@@ -113,7 +134,9 @@ internal fun BreedsScreen(
     }
 
     Scaffold(
-        modifier = Modifier.testTag("breeds:screen"),
+        modifier = modifier
+            .semantics { testTagsAsResourceId = true }
+            .testTag("breeds:screen"),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             BreedsTopBar(onNavigateToFavourites = onNavigateToFavourites)
@@ -121,8 +144,8 @@ internal fun BreedsScreen(
     ) { _ ->
         BreedsContent(
             uiState = uiState,
-            onSwipeRight = viewModel::swipeRight,
-            onSwipeLeft = viewModel::swipeLeft,
+            onSwipeRight = onSwipeRight,
+            onSwipeLeft = onSwipeLeft,
         )
     }
 }
@@ -392,11 +415,11 @@ private fun BreedBackCard(
                 contentDescription = "Breed card ${breed.name}"
             }
             .graphicsLayer {
-            val scale = 1f - depthIndex * BACK_CARD_SCALE_STEP
-            scaleX = scale
-            scaleY = scale
-            translationY = depthIndex * BACK_CARD_Y_STEP_DP.dp.toPx()
-        },
+                val scale = 1f - depthIndex * BACK_CARD_SCALE_STEP
+                scaleX = scale
+                scaleY = scale
+                translationY = depthIndex * BACK_CARD_Y_STEP_DP.dp.toPx()
+            },
     ) {
         BreedCardContent(breed = breed, isInteractive = false)
     }

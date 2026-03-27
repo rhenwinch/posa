@@ -38,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.posa.R
@@ -51,21 +52,41 @@ import io.posa.feature.favourites.component.FavouritesEmptyContent
 import io.posa.feature.favourites.component.FavouritesErrorContent
 import io.posa.feature.favourites.component.FavouritesLoadingContent
 import io.posa.feature.favourites.component.SortOrderToggle
+import kotlinx.coroutines.flow.SharedFlow
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FavouritesScreen(
     viewModel: FavouritesViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    FavouritesScreenContent(
+        uiState = uiState,
+        onNavigateBack = onNavigateBack,
+        onRemoveCard = viewModel::remove,
+        onSortOrderChange = viewModel::onSortOrderChange,
+        events = viewModel.events,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FavouritesScreenContent(
+    uiState: FavouritesUiState,
+    onNavigateBack: () -> Unit,
+    onRemoveCard: (FavouriteImage) -> Unit,
+    onSortOrderChange: (SortOrder) -> Unit,
+    events: SharedFlow<FavouritesEvent>,
+    modifier: Modifier = Modifier
+) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     var clickedBreed by remember { mutableStateOf<CatBreed?>(null) }
 
     LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
+        events.collect { event ->
             when (event) {
                 FavouritesEvent.FavouriteRemoved ->
                     snackbarHostState.showSnackbar("🤨🤨🤨⁉️")
@@ -77,7 +98,9 @@ internal fun FavouritesScreen(
     }
 
     Scaffold(
-        modifier = Modifier.testTag("favourites:screen"),
+        modifier = modifier
+            .semantics { testTagsAsResourceId = true }
+            .testTag("favourites:screen"),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             FavouritesTopBar(
@@ -88,8 +111,8 @@ internal fun FavouritesScreen(
     ) { innerPadding ->
         FavouritesContent(
             uiState = uiState,
-            onRemoveCard = viewModel::remove,
-            onSortOrderChange = viewModel::onSortOrderChange,
+            onRemoveCard = onRemoveCard,
+            onSortOrderChange = onSortOrderChange,
             onViewCard = { clickedBreed = it.breed },
             modifier = Modifier.padding(innerPadding),
         )
