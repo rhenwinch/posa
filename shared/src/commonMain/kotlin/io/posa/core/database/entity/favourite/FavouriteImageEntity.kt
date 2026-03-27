@@ -4,11 +4,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import io.posa.core.common.enum.SyncStatus
 import io.posa.core.database.entity.breed.CatBreedEntity
 import io.posa.domain.model.favourite.FavouriteImage
-import io.posa.domain.model.image.CatImage
-import io.posa.core.common.enum.SyncStatus
-import kotlin.time.Instant
 
 @Entity(
     tableName = "favourite_images",
@@ -38,7 +36,7 @@ data class FavouriteImageEntity(
                 imageId = favourite.imageId,
                 imageUrl = favourite.imageUrl,
                 syncStatus = favourite.syncStatus,
-                createdAt = favourite.createdAt.toEpochMilliseconds()
+                createdAt = favourite.createdAt
             )
         }
     }

@@ -4,7 +4,6 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import io.posa.core.database.entity.breed.CatBreedEntityWithTraitsAndBadges
 import io.posa.domain.model.favourite.FavouriteImage
-import kotlin.time.Instant
 
 data class FavouriteImageWithBreed(
     @Embedded val favouriteImage: FavouriteImageEntity,
@@ -19,7 +18,7 @@ data class FavouriteImageWithBreed(
         breed = breed.toDomain(),
         imageId = favouriteImage.imageId,
         imageUrl = favouriteImage.imageUrl,
-        createdAt = Instant.fromEpochMilliseconds(favouriteImage.createdAt),
+        createdAt = favouriteImage.createdAt,
         syncStatus = favouriteImage.syncStatus,
     )
 }

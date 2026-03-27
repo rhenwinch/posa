@@ -79,3 +79,16 @@ let mockCatBreeds: [CatBreed] = (0..<7).flatMap { cycle in
         )
     }
 }
+
+let mockFavouriteImages: [FavouriteImage] = (0..<7).flatMap { cycle in
+    baseBreeds.map { breed in
+        return FavouriteImage(
+            id: cycle,
+            imageId: breed.imageId,
+            imageUrl: breed.imageUrl,
+            createdAt: Int64(NSDate().timeIntervalSince1970),
+            breed: breed,
+            syncStatus: SyncStatus.pendingSync
+        )
+    }
+}

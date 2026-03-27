@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BreedsDeckEmptyContent : View {
+struct BreedsDeckEmptyView : View {
     let reachedEnd: Bool
     
     var body: some View {
@@ -35,8 +35,8 @@ struct BreedsDeckEmptyContent : View {
 
 #Preview {
     VStack(spacing: 20) {
-        BreedsDeckEmptyContent(reachedEnd: true)
+        BreedsDeckEmptyView(reachedEnd: true)
         
-        BreedsDeckEmptyContent(reachedEnd: false)
+        BreedsDeckEmptyView(reachedEnd: false)
     }
 }

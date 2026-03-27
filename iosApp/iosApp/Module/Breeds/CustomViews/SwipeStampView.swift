@@ -8,7 +8,7 @@
 import Swift
 import SwiftUI
 
-struct SwipeStamp : View {
+struct SwipeStampView : View {
     let alignment: Alignment
     let label: String
     let color: Color
@@ -43,7 +43,7 @@ struct SwipeLikeOverlay : View {
     let offsetX: CGFloat
     
     var body: some View {
-        SwipeStamp(
+        SwipeStampView(
             alignment: .topLeading,
             label: "Yeyy",
             color: Color.green,
@@ -57,7 +57,7 @@ struct SwipeNopeOverlay : View {
     let offsetX: CGFloat
     
     var body: some View {
-        SwipeStamp(
+        SwipeStampView(
             alignment: .topTrailing,
             label: "Nayyy",
             color: Color.red,

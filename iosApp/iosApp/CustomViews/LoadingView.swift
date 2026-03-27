@@ -7,12 +7,14 @@
 
 import SwiftUI
 
-struct BreedsLoadingContent : View {
+struct LoadingView : View {
+    let message: String
+    
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
             CircularProgressView(size: 35)
             
-            Text("Finding cats…")
+            Text(message)
                 .font(.body)
                 .fontWeight(.medium)
                 .foregroundStyle(Color.appOnSurface)
@@ -51,5 +53,5 @@ private struct CircularProgressView: View {
 }
 
 #Preview {
-    BreedsLoadingContent()
+    LoadingView(message: "Finding cats…")
 }

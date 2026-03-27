@@ -25,11 +25,11 @@ struct BreedsScreen : View {
             TopBar(onNavigateToFavouritesScreen: onNavigateToFavouritesScreen)
             
             if viewModel.isLoading && viewModel.deck.isEmpty {
-                BreedsLoadingContent()
+                LoadingView(message: "Finding cats…")
             } else if viewModel.error != nil && viewModel.deck.isEmpty {
-                BreedsErrorContent(error: viewModel.error!)
+                ErrorView(error: viewModel.error!)
             } else if viewModel.deck.isEmpty {
-                BreedsDeckEmptyContent(reachedEnd: viewModel.hasReachedEnd)
+                BreedsDeckEmptyView(reachedEnd: viewModel.hasReachedEnd)
             } else {
                 BreedDeckContent(
                     isPrefetching: viewModel.isPrefetching,

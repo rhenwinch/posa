@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BreedsErrorContent : View {
+struct ErrorView : View {
     let error: String
     
     var body: some View {
@@ -31,5 +31,5 @@ struct BreedsErrorContent : View {
 }
 
 #Preview {
-    BreedsErrorContent(error: "A connection error occured, check your internet and try again")
+    ErrorView(error: "A connection error occured, check your internet and try again")
 }

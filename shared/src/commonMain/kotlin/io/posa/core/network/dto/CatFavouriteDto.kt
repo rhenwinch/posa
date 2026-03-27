@@ -1,7 +1,7 @@
 package io.posa.core.network.dto
 
-import io.posa.domain.model.favourite.FavouriteImage
 import io.posa.core.common.enum.SyncStatus
+import io.posa.domain.model.favourite.FavouriteImage
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -19,7 +19,7 @@ data class CatFavouriteDto(
         id = id,
         imageId = imageId,
         imageUrl = image.url,
-        createdAt = createdAt,
+        createdAt = createdAt.epochSeconds,
         syncStatus = SyncStatus.SYNCED,
         breed = image.breeds.first().toDomain(),
     )

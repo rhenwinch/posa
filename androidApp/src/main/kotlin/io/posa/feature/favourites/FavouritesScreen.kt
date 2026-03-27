@@ -1,6 +1,7 @@
 package io.posa.feature.favourites
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -26,7 +28,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -34,7 +38,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.posa.R
 import io.posa.core.common.enum.SortOrder
+import io.posa.domain.model.breed.CatBreed
 import io.posa.domain.model.favourite.FavouriteImage
+import io.posa.feature.favourites.component.BreedDetailSheet
 import io.posa.feature.favourites.component.EndOfListLabel
 import io.posa.feature.favourites.component.FavouriteCard
 import io.posa.feature.favourites.component.FavouritesEmptyContent
@@ -43,6 +49,7 @@ import io.posa.feature.favourites.component.FavouritesLoadingContent
 import io.posa.feature.favourites.component.SortOrderToggle
 import org.koin.compose.viewmodel.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FavouritesScreen(
     viewModel: FavouritesViewModel = koinViewModel(),
@@ -50,6 +57,8 @@ internal fun FavouritesScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    var clickedBreed by remember { mutableStateOf<CatBreed?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -76,8 +85,19 @@ internal fun FavouritesScreen(
             uiState = uiState,
             onRemoveCard = viewModel::remove,
             onSortOrderChange = viewModel::onSortOrderChange,
+            onViewCard = { clickedBreed = it.breed },
             modifier = Modifier.padding(innerPadding),
         )
+    }
+
+    if (clickedBreed != null) {
+        ModalBottomSheet(
+            onDismissRequest = { clickedBreed = null }
+        ) {
+            BreedDetailSheet(
+                breed = clickedBreed!!,
+            )
+        }
     }
 }
 
@@ -126,8 +146,9 @@ private fun FavouritesTopBar(
 private fun FavouritesContent(
     uiState: FavouritesUiState,
     onRemoveCard: (FavouriteImage) -> Unit,
-    modifier: Modifier = Modifier,
     onSortOrderChange: (SortOrder) -> Unit,
+    onViewCard: (FavouriteImage) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         when {
@@ -144,7 +165,8 @@ private fun FavouritesContent(
                 FavouritesGridContent(
                     uiState = uiState,
                     onRemoveCard = onRemoveCard,
-                    onSortOrderChange = onSortOrderChange
+                    onSortOrderChange = onSortOrderChange,
+                    onViewCard = onViewCard,
                 )
         }
     }
@@ -155,6 +177,7 @@ private fun FavouritesGridContent(
     uiState: FavouritesUiState,
     onRemoveCard: (FavouriteImage) -> Unit,
     onSortOrderChange: (SortOrder) -> Unit,
+    onViewCard: (FavouriteImage) -> Unit,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(160.dp),
@@ -182,7 +205,10 @@ private fun FavouritesGridContent(
             FavouriteCard(
                 favourite = favourite,
                 onRemove = { onRemoveCard(favourite) },
-                modifier = Modifier.animateItem(),
+                modifier = Modifier.animateItem()
+                    .clickable {
+                        onViewCard(favourite)
+                    },
             )
         }
 
