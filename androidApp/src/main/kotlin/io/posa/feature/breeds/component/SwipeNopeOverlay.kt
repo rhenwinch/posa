@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import io.posa.core.common.UiIdentifiers
 
 private val NopeRed = Color(0xFFFF4D4D)
 
@@ -36,7 +37,7 @@ internal fun SwipeNopeOverlay(offsetX: Animatable<Float, AnimationVector1D>) {
             rotation = 22f,
             modifier = Modifier
                 .padding(22.dp)
-                .testTag("breeds:overlay:nope")
+                .testTag(UiIdentifiers.BREEDS_OVERLAY_NOPE)
                 .semantics { contentDescription = "Nope" },
         )
     }

@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import io.posa.core.common.UiIdentifiers
 
 
 @Composable
@@ -19,7 +20,7 @@ internal fun BreedsDeckEmptyContent(reachedEnd: Boolean) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .testTag(if (reachedEnd) "breeds:empty:end" else "breeds:empty:loadingMore"),
+            .testTag(if (reachedEnd) UiIdentifiers.BREEDS_EMPTY_END else UiIdentifiers.BREEDS_EMPTY_LOADING_MORE),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

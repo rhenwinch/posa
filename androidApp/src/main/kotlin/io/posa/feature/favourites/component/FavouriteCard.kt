@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import io.posa.R
+import io.posa.core.common.UiIdentifiers
 import io.posa.domain.model.favourite.FavouriteImage
 import kotlinx.coroutines.delay
 
@@ -112,7 +113,7 @@ internal fun FavouriteCard(
                     onClick = { isBeingRemoved = true },
                     modifier = Modifier
                         .size(28.dp)
-                        .testTag("favourites:item:${favourite.imageId}:remove"),
+                        .testTag(UiIdentifiers.favouritesItemRemove(favourite.imageId)),
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.unfavourite),

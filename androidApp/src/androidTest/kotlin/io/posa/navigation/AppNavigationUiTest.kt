@@ -11,6 +11,7 @@ import androidx.compose.ui.test.performClick
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import io.posa.core.common.UiIdentifiers
 import io.posa.feature.breeds.BreedsEvent
 import io.posa.feature.breeds.BreedsScreenContent
 import io.posa.feature.breeds.BreedsUiState
@@ -58,24 +59,24 @@ class AppNavigationUiTest {
         }
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("breeds:screen")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.BREEDS_SCREEN)).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("breeds:topBar:favouritesButton").performClick()
+        rule.onNodeWithTag(UiIdentifiers.BREEDS_TOP_BAR_FAVOURITES_BUTTON).performClick()
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("favourites:screen")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.FAVOURITES_SCREEN)).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("favourites:screen").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.FAVOURITES_SCREEN).assertIsDisplayed()
 
-        rule.onNodeWithTag("favourites:topBar:backButton").performClick()
+        rule.onNodeWithTag(UiIdentifiers.FAVOURITES_TOP_BAR_BACK_BUTTON).performClick()
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("breeds:screen")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.BREEDS_SCREEN)).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("breeds:screen").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.BREEDS_SCREEN).assertIsDisplayed()
     }
 }
 

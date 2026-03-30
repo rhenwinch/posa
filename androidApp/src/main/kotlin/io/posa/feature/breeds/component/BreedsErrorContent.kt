@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import io.posa.core.common.UiIdentifiers
 
 
 @Composable
@@ -22,7 +23,7 @@ internal fun BreedsErrorContent(error: Throwable) {
         modifier = Modifier
             .fillMaxSize()
             .padding(32.dp)
-            .testTag("breeds:error"),
+            .testTag(UiIdentifiers.BREEDS_ERROR),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

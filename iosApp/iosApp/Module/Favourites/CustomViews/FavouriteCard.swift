@@ -78,6 +78,7 @@ struct FavouriteCard : View {
                 .frame(width: 28, height: 28)
             }
             .buttonStyle(.plain)
+            .accessibilityIdentifier(UiIdentifiers.shared.favouritesItemRemove(imageId: favourite.imageId))
             .padding(8)
         }
         .aspectRatio(1, contentMode: .fit)
@@ -88,6 +89,7 @@ struct FavouriteCard : View {
         .onTapGesture {
             onClick()
         }
+        .accessibilityIdentifier(UiIdentifiers.shared.favouritesItem(imageId: favourite.imageId))
     }
 }
 

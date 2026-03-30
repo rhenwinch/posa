@@ -21,6 +21,7 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import io.posa.core.common.UiIdentifiers
 import io.posa.core.common.enum.SortOrder
 
 @Composable
@@ -34,14 +35,14 @@ internal fun SortOrderToggle(
             label = "Asc",
             selected = sortOrder.isAscending,
             onClick = { onSortOrderChange(SortOrder.ASC) },
-            modifier = Modifier.testTag("favourites:sortOrder:asc"),
+            modifier = Modifier.testTag(UiIdentifiers.FAVOURITES_SORT_ORDER_ASC),
         )
 
         SortChip(
             label = "Desc",
             selected = sortOrder.isDescending,
             onClick = { onSortOrderChange(SortOrder.DESC) },
-            modifier = Modifier.testTag("favourites:sortOrder:desc"),
+            modifier = Modifier.testTag(UiIdentifiers.FAVOURITES_SORT_ORDER_DESC),
         )
     }
 }

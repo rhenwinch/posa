@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import shared
 
 struct EndOfListLabelView : View {
     var body : some View {
@@ -14,6 +15,7 @@ struct EndOfListLabelView : View {
             .foregroundStyle(Color.appOnSurface.opacity(0.6))
             .padding(.vertical, 20)
             .frame(maxWidth: .infinity)
+            .accessibilityIdentifier(UiIdentifiers.shared.FAVOURITES_END_OF_LIST)
     }
 }
 

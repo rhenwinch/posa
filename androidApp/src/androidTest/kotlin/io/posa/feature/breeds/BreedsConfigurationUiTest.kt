@@ -7,6 +7,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import io.posa.core.common.UiIdentifiers
 import io.posa.test.TestFakes
 import io.posa.theme.AppTheme
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -41,11 +42,11 @@ class BreedsConfigurationUiTest {
         }
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("breeds:screen")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.BREEDS_SCREEN)).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("breeds:screen").assertIsDisplayed()
-        rule.onNodeWithTag("breeds:card:top:b1").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.BREEDS_SCREEN).assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.breedsCardTop("b1")).assertIsDisplayed()
     }
 
     @Test
@@ -70,20 +71,20 @@ class BreedsConfigurationUiTest {
             }
         }
 
-        rule.onNodeWithTag("breeds:screen").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.BREEDS_SCREEN).assertIsDisplayed()
 
         rule.runOnUiThread {
             rule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
         rule.waitForIdle()
 
-        rule.onNodeWithTag("breeds:screen").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.BREEDS_SCREEN).assertIsDisplayed()
 
         rule.runOnUiThread {
             rule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
         rule.waitForIdle()
 
-        rule.onNodeWithTag("breeds:screen").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.BREEDS_SCREEN).assertIsDisplayed()
     }
 }

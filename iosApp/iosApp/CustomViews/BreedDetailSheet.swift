@@ -29,9 +29,11 @@ struct BreedDetailSheet: View {
                     Divider()
                     BadgesSection(badges: breed.badges)
                 }
+                .accessibilityIdentifier(UiIdentifiers.shared.BREED_DETAIL_CONTENT)
                 .padding(20)
             }
         }
+        .accessibilityIdentifier(UiIdentifiers.shared.BREED_DETAIL_ROOT)
         .overlay(alignment: .top) {
             Rectangle()
                 .frame(width: 32, height: 4)
@@ -107,8 +109,10 @@ private struct TemperamentsSection: View {
                     .clipShape(Capsule())
                     .overlay(Capsule().strokeBorder(Color.appOnSurfaceVariant, lineWidth: 0.5))
                     .foregroundStyle(Color.appOnSurface)
+                    .accessibilityIdentifier(UiIdentifiers.shared.breedDetailTemperament(value: tag))
             }
         }
+        .accessibilityIdentifier(UiIdentifiers.shared.BREED_DETAIL_TEMPERAMENTS)
     }
 }
 
@@ -135,6 +139,7 @@ private struct TraitsSection: View {
                 TraitRow(name: name, value: value)
             }
         }
+        .accessibilityIdentifier(UiIdentifiers.shared.BREED_DETAIL_TRAITS)
     }
 }
 
@@ -164,6 +169,7 @@ private struct TraitRow: View {
                 .foregroundStyle(Color.appOnSurfaceVariant.opacity(0.5))
                 .frame(width: 16, alignment: .trailing)
         }
+        .accessibilityIdentifier(UiIdentifiers.shared.breedDetailTrait(value: name))
     }
 }
 
@@ -189,6 +195,7 @@ private struct BadgesSection: View {
                 }
             }
         }
+        .accessibilityIdentifier(UiIdentifiers.shared.BREED_DETAIL_BADGES)
     }
 }
 
@@ -210,6 +217,7 @@ private struct BadgePill: View {
         .background(active ? Color.appSurfaceVariant : Color.clear)
         .clipShape(Capsule())
         .overlay(Capsule().strokeBorder(Color.appSurfaceVariant, lineWidth: 1))
+        .accessibilityIdentifier(UiIdentifiers.shared.breedDetailBadge(value: label))
     }
 }
 

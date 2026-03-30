@@ -13,6 +13,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.unit.dp
+import io.posa.core.common.UiIdentifiers
 import io.posa.feature.favourites.component.BreedDetailSheet
 import io.posa.feature.favourites.component.FavouriteCard
 import io.posa.test.TestFakes
@@ -52,7 +53,7 @@ class FavouritesContentComposableUiTest {
         rule.onNodeWithContentDescription(favourite.breed.name).assertIsDisplayed()
         rule.onNodeWithText(favourite.breed.name).assertIsDisplayed()
         rule.onNodeWithText(favourite.breed.origin).assertIsDisplayed()
-        rule.onNodeWithTag("favourites:item:${favourite.imageId}:remove").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.favouritesItemRemove(favourite.imageId)).assertIsDisplayed()
     }
 
     @Test
@@ -74,17 +75,17 @@ class FavouritesContentComposableUiTest {
             }
         }
 
-        rule.onNodeWithTag("breedDetail:root").assertIsDisplayed()
-        rule.onNodeWithTag("breedDetail:content").assertIsDisplayed()
-        rule.onNodeWithTag("breedDetail:temperaments").assertIsDisplayed()
-        rule.onNodeWithTag("breedDetail:traits").assertIsDisplayed()
-        rule.onNodeWithTag("breedDetail:badges").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.BREED_DETAIL_ROOT).assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.BREED_DETAIL_CONTENT).assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.BREED_DETAIL_TEMPERAMENTS).assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.BREED_DETAIL_TRAITS).assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.BREED_DETAIL_BADGES).assertIsDisplayed()
 
-        rule.onNodeWithTag("breedDetail:temperament:independent").assertIsDisplayed()
-        rule.onNodeWithTag("breedDetail:temperament:active").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.breedDetailTemperament("Independent")).assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.breedDetailTemperament("Active")).assertIsDisplayed()
 
-        rule.onNodeWithTag("breedDetail:trait:adaptability").assertIsDisplayed()
-        rule.onNodeWithTag("breedDetail:badge:lap_cat").assertIsDisplayed()
-        rule.onNodeWithTag("breedDetail:badge:indoor").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.breedDetailTrait("Adaptability")).assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.breedDetailBadge("Lap cat")).assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.breedDetailBadge("Indoor")).assertIsDisplayed()
     }
 }

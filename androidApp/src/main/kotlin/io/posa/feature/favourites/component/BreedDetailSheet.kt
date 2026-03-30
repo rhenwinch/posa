@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import coil3.compose.AsyncImage
+import io.posa.core.common.UiIdentifiers
 import io.posa.domain.model.breed.CatBadges
 import io.posa.domain.model.breed.CatBreed
 import io.posa.domain.model.breed.CatTraits
@@ -52,14 +53,14 @@ internal fun BreedDetailSheet(breed: CatBreed) {
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
-            .testTag("breedDetail:root")
+            .testTag(UiIdentifiers.BREED_DETAIL_ROOT)
     ) {
         HeroImage(imageUrl = breed.imageUrl)
 
         Column(
             modifier = Modifier
                 .padding(20.dp)
-                .testTag("breedDetail:content"),
+                .testTag(UiIdentifiers.BREED_DETAIL_CONTENT),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             BreedHeaderSection(breed)
@@ -108,7 +109,7 @@ private fun BreedHeaderSection(breed: CatBreed) {
 private fun TemperamentsSection(temperaments: List<String>) {
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
-        modifier = Modifier.testTag("breedDetail:temperaments"),
+        modifier = Modifier.testTag(UiIdentifiers.BREED_DETAIL_TEMPERAMENTS),
     ) {
         temperaments.forEach { tag ->
             SuggestionChip(
@@ -116,7 +117,7 @@ private fun TemperamentsSection(temperaments: List<String>) {
                 label = {
                     Text(text = tag, style = MaterialTheme.typography.labelSmall)
                 },
-                modifier = Modifier.testTag("breedDetail:temperament:${tag.lowercase().replace(' ', '_')}"),
+                modifier = Modifier.testTag(UiIdentifiers.breedDetailTemperament(tag)),
             )
         }
     }
@@ -139,7 +140,7 @@ private fun TraitsSection(traits: CatTraits) {
 
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = Modifier.testTag("breedDetail:traits"),
+        modifier = Modifier.testTag(UiIdentifiers.BREED_DETAIL_TRAITS),
     ) {
         SectionLabel("Traits")
         rows.forEach { (name, value) ->
@@ -159,7 +160,7 @@ private fun TraitRow(name: String, value: Int) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = Modifier.testTag("breedDetail:trait:${name.lowercase().replace(' ', '_')}")
+        modifier = Modifier.testTag(UiIdentifiers.breedDetailTrait(name))
     ) {
         Text(
             text = name,
@@ -201,7 +202,7 @@ private fun BadgesSection(badges: CatBadges) {
 
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = Modifier.testTag("breedDetail:badges"),
+        modifier = Modifier.testTag(UiIdentifiers.BREED_DETAIL_BADGES),
     ) {
         SectionLabel("Badges")
         FlowRow(
@@ -243,7 +244,7 @@ private fun BadgePill(label: String, active: Boolean) {
         ),
         modifier = Modifier
             .heightIn(min = 25.dp)
-            .testTag("breedDetail:badge:${label.lowercase().replace(' ', '_')}")
+            .testTag(UiIdentifiers.breedDetailBadge(label))
     )
 }
 

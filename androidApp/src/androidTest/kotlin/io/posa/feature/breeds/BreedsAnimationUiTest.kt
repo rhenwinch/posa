@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeLeft
 import androidx.compose.ui.test.swipeRight
+import io.posa.core.common.UiIdentifiers
 import io.posa.test.TestFakes
 import io.posa.theme.AppTheme
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -55,10 +56,10 @@ class BreedsAnimationUiTest {
         }
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("breeds:card:top:b1")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.breedsCardTop("b1"))).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("breeds:card:top:b1").performTouchInput { swipeRight() }
+        rule.onNodeWithTag(UiIdentifiers.breedsCardTop("b1")).performTouchInput { swipeRight() }
         rule.waitForIdle()
 
         if (swipeRightCalls.get() != 0) throw AssertionError("Expected callback after animation, not immediately")
@@ -68,11 +69,11 @@ class BreedsAnimationUiTest {
 
         if (swipeRightCalls.get() != 1) throw AssertionError("Expected callback to be invoked after swipe animation")
 
-        if (rule.onAllNodes(hasTestTag("breeds:card:top:b1")).fetchSemanticsNodes().isNotEmpty()) {
+        if (rule.onAllNodes(hasTestTag(UiIdentifiers.breedsCardTop("b1"))).fetchSemanticsNodes().isNotEmpty()) {
             throw AssertionError("Expected b1 card to be removed from the deck")
         }
 
-        rule.onNodeWithTag("breeds:card:top:b2").assertExists()
+        rule.onNodeWithTag(UiIdentifiers.breedsCardTop("b2")).assertExists()
     }
 
     @Test
@@ -111,10 +112,10 @@ class BreedsAnimationUiTest {
         }
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("breeds:card:top:b1")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.breedsCardTop("b1"))).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("breeds:card:top:b1").performTouchInput { swipeLeft() }
+        rule.onNodeWithTag(UiIdentifiers.breedsCardTop("b1")).performTouchInput { swipeLeft() }
         rule.waitForIdle()
 
         if (swipeLeftCalls.get() != 0) throw AssertionError("Expected callback after troll swipe animation, not immediately")
@@ -124,7 +125,7 @@ class BreedsAnimationUiTest {
 
         if (swipeLeftCalls.get() != 1) throw AssertionError("Expected callback after troll swipe animation")
 
-        if (rule.onAllNodes(hasTestTag("breeds:card:top:b1")).fetchSemanticsNodes().isNotEmpty()) {
+        if (rule.onAllNodes(hasTestTag(UiIdentifiers.breedsCardTop("b1"))).fetchSemanticsNodes().isNotEmpty()) {
             throw AssertionError("Expected b1 card to be removed from the deck")
         }
     }
@@ -157,10 +158,10 @@ class BreedsAnimationUiTest {
         }
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("breeds:card:top:b1")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.breedsCardTop("b1"))).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("breeds:card:top:b1").performTouchInput {
+        rule.onNodeWithTag(UiIdentifiers.breedsCardTop("b1")).performTouchInput {
             down(center)
             moveBy(androidx.compose.ui.geometry.Offset(120f, 0f))
             up()
@@ -172,6 +173,6 @@ class BreedsAnimationUiTest {
         if (swipeRightCalls.get() != 0) throw AssertionError("Did not expect swipeRight callback for small drag")
         if (swipeLeftCalls.get() != 0) throw AssertionError("Did not expect swipeLeft callback for small drag")
 
-        rule.onNodeWithTag("breeds:card:top:b1").assertExists()
+        rule.onNodeWithTag(UiIdentifiers.breedsCardTop("b1")).assertExists()
     }
 }

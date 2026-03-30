@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import io.posa.core.common.UiIdentifiers
 
 
 @Composable
@@ -21,7 +22,7 @@ internal fun FavouritesLoadingContent() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .testTag("favourites:loading"),
+            .testTag(UiIdentifiers.FAVOURITES_LOADING),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

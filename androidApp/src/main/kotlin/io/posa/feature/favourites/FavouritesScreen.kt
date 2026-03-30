@@ -42,6 +42,7 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.posa.R
+import io.posa.core.common.UiIdentifiers
 import io.posa.core.common.enum.SortOrder
 import io.posa.domain.model.breed.CatBreed
 import io.posa.domain.model.favourite.FavouriteImage
@@ -100,7 +101,7 @@ internal fun FavouritesScreenContent(
     Scaffold(
         modifier = modifier
             .semantics { testTagsAsResourceId = true }
-            .testTag("favourites:screen"),
+            .testTag(UiIdentifiers.FAVOURITES_SCREEN),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             FavouritesTopBar(
@@ -121,7 +122,7 @@ internal fun FavouritesScreenContent(
     if (clickedBreed != null) {
         ModalBottomSheet(
             onDismissRequest = { clickedBreed = null },
-            modifier = Modifier.testTag("favourites:detailSheet"),
+            modifier = Modifier.testTag(UiIdentifiers.FAVOURITES_DETAIL_SHEET),
         ) {
             BreedDetailSheet(
                 breed = clickedBreed!!,
@@ -141,7 +142,7 @@ private fun FavouritesTopBar(
             IconButton(
                 onClick = onNavigateBack,
                 modifier = Modifier
-                    .testTag("favourites:topBar:backButton")
+                    .testTag(UiIdentifiers.FAVOURITES_TOP_BAR_BACK_BUTTON)
                     .semantics { role = Role.Button },
             ) {
                 Icon(
@@ -225,13 +226,13 @@ private fun FavouritesGridContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
             .fillMaxSize()
-            .testTag("favourites:grid"),
+            .testTag(UiIdentifiers.FAVOURITES_GRID),
     ) {
         item(span = { GridItemSpan(maxLineSpan) }) {
             SortOrderToggle(
                 sortOrder = uiState.sortOrder,
                 onSortOrderChange = onSortOrderChange,
-                modifier = Modifier.testTag("favourites:sortOrder"),
+                modifier = Modifier.testTag(UiIdentifiers.FAVOURITES_SORT_ORDER),
             )
         }
 
@@ -244,7 +245,7 @@ private fun FavouritesGridContent(
                 onRemove = { onRemoveCard(favourite) },
                 modifier = Modifier
                     .animateItem()
-                    .testTag("favourites:item:${favourite.imageId}")
+                    .testTag(UiIdentifiers.favouritesItem(favourite.imageId))
                     .semantics { role = Role.Button }
                     .clickable {
                         onViewCard(favourite)

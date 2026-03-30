@@ -12,6 +12,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import androidx.test.espresso.Espresso.pressBack
+import io.posa.core.common.UiIdentifiers
 import io.posa.core.common.enum.SortOrder
 import io.posa.test.TestFakes
 import io.posa.theme.AppTheme
@@ -41,7 +42,7 @@ class FavouritesScreenUiTest {
             }
         }
 
-        rule.onNodeWithTag("favourites:loading").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.FAVOURITES_LOADING).assertIsDisplayed()
 
         rule.runOnIdle {
             uiState.value = FavouritesUiState(
@@ -122,27 +123,27 @@ class FavouritesScreenUiTest {
         }
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("favourites:grid")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.FAVOURITES_GRID)).fetchSemanticsNodes().isNotEmpty()
         }
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("favourites:item:img_1")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.favouritesItem("img_1"))).fetchSemanticsNodes().isNotEmpty()
         }
 
-        val sortBounds = rule.onNodeWithTag("favourites:sortOrder").getUnclippedBoundsInRoot()
-        val firstItemBounds = rule.onNodeWithTag("favourites:item:img_1").getUnclippedBoundsInRoot()
+        val sortBounds = rule.onNodeWithTag(UiIdentifiers.FAVOURITES_SORT_ORDER).getUnclippedBoundsInRoot()
+        val firstItemBounds = rule.onNodeWithTag(UiIdentifiers.favouritesItem("img_1")).getUnclippedBoundsInRoot()
 
         if (sortBounds.top >= firstItemBounds.top) {
             throw AssertionError("Expected sort toggle above first grid item")
         }
 
-        if (rule.onAllNodes(hasTestTag("favourites:endOfList")).fetchSemanticsNodes().isNotEmpty()) {
+        if (rule.onAllNodes(hasTestTag(UiIdentifiers.FAVOURITES_END_OF_LIST)).fetchSemanticsNodes().isNotEmpty()) {
             throw AssertionError("Expected end-of-list label to be offscreen initially")
         }
 
-        rule.onNodeWithTag("favourites:grid").performScrollToNode(hasTestTag("favourites:endOfList"))
+        rule.onNodeWithTag(UiIdentifiers.FAVOURITES_GRID).performScrollToNode(hasTestTag(UiIdentifiers.FAVOURITES_END_OF_LIST))
 
-        rule.onNodeWithTag("favourites:endOfList").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.FAVOURITES_END_OF_LIST).assertIsDisplayed()
     }
 
     @Test
@@ -173,22 +174,22 @@ class FavouritesScreenUiTest {
         }
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("favourites:item:img_1")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.favouritesItem("img_1"))).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("favourites:item:img_1").performClick()
+        rule.onNodeWithTag(UiIdentifiers.favouritesItem("img_1")).performClick()
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("favourites:detailSheet")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.FAVOURITES_DETAIL_SHEET)).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("favourites:detailSheet").assertIsDisplayed()
-        rule.onNodeWithTag("breedDetail:root").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.FAVOURITES_DETAIL_SHEET).assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.BREED_DETAIL_ROOT).assertIsDisplayed()
 
         pressBack()
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("favourites:detailSheet")).fetchSemanticsNodes().isEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.FAVOURITES_DETAIL_SHEET)).fetchSemanticsNodes().isEmpty()
         }
     }
 
@@ -225,10 +226,10 @@ class FavouritesScreenUiTest {
         }
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("favourites:item:img_1:remove")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.favouritesItemRemove("img_1"))).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("favourites:item:img_1:remove").performClick()
+        rule.onNodeWithTag(UiIdentifiers.favouritesItemRemove("img_1")).performClick()
 
         rule.waitUntil(6_000) {
             rule.onAllNodes(hasText("🤨🤨🤨⁉️")).fetchSemanticsNodes().isNotEmpty()
@@ -270,10 +271,10 @@ class FavouritesScreenUiTest {
         }
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("favourites:item:img_1:remove")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.favouritesItemRemove("img_1"))).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("favourites:item:img_1:remove").performClick()
+        rule.onNodeWithTag(UiIdentifiers.favouritesItemRemove("img_1")).performClick()
 
         rule.waitUntil(6_000) {
             rule.onAllNodes(hasText("nope")).fetchSemanticsNodes().isNotEmpty()
@@ -286,9 +287,9 @@ class FavouritesScreenUiTest {
         }
 
         rule.waitUntil(6_000) {
-            rule.onAllNodes(hasTestTag("favourites:item:img_1")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.favouritesItem("img_1"))).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("favourites:item:img_1").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.favouritesItem("img_1")).assertIsDisplayed()
     }
 }

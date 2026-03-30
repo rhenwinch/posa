@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import shared
 
 struct BreedsDeckEmptyView : View {
     let reachedEnd: Bool
@@ -22,6 +23,11 @@ struct BreedsDeckEmptyView : View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .multilineTextAlignment(.center)
         .foregroundStyle(Color.appOnSurface)
+        .accessibilityIdentifier(
+            reachedEnd
+            ? UiIdentifiers.shared.BREEDS_EMPTY_END
+            : UiIdentifiers.shared.BREEDS_EMPTY_LOADING_MORE
+        )
     }
     
     private func getHeaderEmoji() -> String {

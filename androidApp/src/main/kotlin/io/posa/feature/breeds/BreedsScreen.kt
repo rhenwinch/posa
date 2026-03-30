@@ -67,6 +67,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import io.posa.R
+import io.posa.core.common.UiIdentifiers
 import io.posa.domain.model.breed.CatBadges
 import io.posa.domain.model.breed.CatBreed
 import io.posa.domain.model.breed.CatTraits
@@ -138,7 +139,7 @@ internal fun BreedsScreenContent(
     Scaffold(
         modifier = modifier
             .semantics { testTagsAsResourceId = true }
-            .testTag("breeds:screen"),
+            .testTag(UiIdentifiers.BREEDS_SCREEN),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             BreedsTopBar(onNavigateToFavourites = onNavigateToFavourites)
@@ -162,7 +163,7 @@ private fun BreedsContent(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .testTag("breeds:content"),
+            .testTag(UiIdentifiers.BREEDS_CONTENT),
     ) {
         when {
             uiState.isLoading && uiState.deck.isEmpty() ->
@@ -206,7 +207,7 @@ private fun BreedsDeckContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .testTag("breeds:deck"),
+            .testTag(UiIdentifiers.BREEDS_DECK),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
@@ -281,7 +282,7 @@ private fun BreedsTopBar(
                 IconButton(
                     onClick = onNavigateToFavourites,
                     modifier = Modifier
-                        .testTag("breeds:topBar:favouritesButton")
+                        .testTag(UiIdentifiers.BREEDS_TOP_BAR_FAVOURITES_BUTTON)
                         .semantics { role = Role.Button },
                 ) {
                     Icon(
@@ -312,7 +313,7 @@ private fun BreedTopCard(
 
     Box(
         modifier = modifier
-            .testTag("breeds:card:top:${breed.id}")
+            .testTag(UiIdentifiers.breedsCardTop(breed.id))
             .semantics(mergeDescendants = true) {
                 contentDescription = "Breed card ${breed.name}"
             }
@@ -412,7 +413,7 @@ private fun BreedBackCard(
 ) {
     Box(
         modifier = modifier
-            .testTag("breeds:card:back:${breed.id}")
+            .testTag(UiIdentifiers.breedsCardBack(breed.id))
             .semantics(mergeDescendants = true) {
                 contentDescription = "Breed card ${breed.name}"
             }

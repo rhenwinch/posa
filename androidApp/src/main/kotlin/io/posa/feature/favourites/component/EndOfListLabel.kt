@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.posa.core.common.UiIdentifiers
 
 
 @Composable
@@ -20,7 +21,7 @@ internal fun EndOfListLabel() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 20.dp)
-            .testTag("favourites:endOfList"),
+            .testTag(UiIdentifiers.FAVOURITES_END_OF_LIST),
         contentAlignment = Alignment.Center,
     ) {
         Text(

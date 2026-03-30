@@ -10,6 +10,7 @@ import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import io.posa.core.common.UiIdentifiers
 import io.posa.domain.model.breed.CatTraits
 import io.posa.feature.favourites.component.BreedDetailSheet
 import io.posa.test.TestFakes
@@ -58,10 +59,10 @@ class FavouritesAnimationUiTest {
         }
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("favourites:item:img_anim:remove")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.favouritesItemRemove("img_anim"))).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("favourites:item:img_anim:remove").performClick()
+        rule.onNodeWithTag(UiIdentifiers.favouritesItemRemove("img_anim")).performClick()
 
         rule.mainClock.advanceTimeBy(150)
         rule.waitForIdle()
@@ -71,7 +72,7 @@ class FavouritesAnimationUiTest {
         rule.waitForIdle()
         if (removeCalls.get() != 1) throw AssertionError("Expected remove callback after animation delay")
 
-        if (rule.onAllNodes(hasTestTag("favourites:item:img_anim")).fetchSemanticsNodes().isNotEmpty()) {
+        if (rule.onAllNodes(hasTestTag(UiIdentifiers.favouritesItem("img_anim"))).fetchSemanticsNodes().isNotEmpty()) {
             throw AssertionError("Expected item to be removed after delayed callback")
         }
     }
@@ -104,13 +105,13 @@ class FavouritesAnimationUiTest {
             }
         }
 
-        rule.onNodeWithTag("breedDetail:root").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.BREED_DETAIL_ROOT).assertIsDisplayed()
 
         val progressMatcher = SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo)
         fun currentProgress(): Float {
             val nodes = rule
                 .onAllNodes(
-                    progressMatcher and hasAnyAncestor(hasTestTag("breedDetail:trait:adaptability")),
+                    progressMatcher and hasAnyAncestor(hasTestTag(UiIdentifiers.breedDetailTrait("Adaptability"))),
                     useUnmergedTree = true,
                 )
                 .fetchSemanticsNodes()

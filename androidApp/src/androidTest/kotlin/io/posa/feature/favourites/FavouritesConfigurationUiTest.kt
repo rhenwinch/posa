@@ -7,6 +7,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import io.posa.core.common.UiIdentifiers
 import io.posa.core.common.enum.SortOrder
 import io.posa.test.TestFakes
 import io.posa.theme.AppTheme
@@ -43,12 +44,12 @@ class FavouritesConfigurationUiTest {
         }
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("favourites:screen")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.FAVOURITES_SCREEN)).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("favourites:screen").assertIsDisplayed()
-        rule.onNodeWithTag("favourites:grid").assertIsDisplayed()
-        rule.onNodeWithTag("favourites:item:img_1").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.FAVOURITES_SCREEN).assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.FAVOURITES_GRID).assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.favouritesItem("img_1")).assertIsDisplayed()
     }
 
     @Test
@@ -74,20 +75,20 @@ class FavouritesConfigurationUiTest {
             }
         }
 
-        rule.onNodeWithTag("favourites:screen").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.FAVOURITES_SCREEN).assertIsDisplayed()
 
         rule.runOnUiThread {
             rule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
         rule.waitForIdle()
 
-        rule.onNodeWithTag("favourites:screen").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.FAVOURITES_SCREEN).assertIsDisplayed()
 
         rule.runOnUiThread {
             rule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
         rule.waitForIdle()
 
-        rule.onNodeWithTag("favourites:screen").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.FAVOURITES_SCREEN).assertIsDisplayed()
     }
 }

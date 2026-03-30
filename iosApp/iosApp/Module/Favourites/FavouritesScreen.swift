@@ -33,35 +33,49 @@ struct FavouritesScreen : View {
     var body: some View {
         ZStack(alignment: .top) {
             Color.appSurface.ignoresSafeArea()
-            
-            ScrollView {
-                LazyVGrid(columns: columns, alignment: .leading) {
-                    Section {
-                        
-                    } header: {
-                        SortOrderToggle(
-                            sortOrder: viewModel.sortOrder,
-                            onChange: {
-                                viewModel.onSortOrderChange(sortOrder: $0)
-                            }
-                        )
+
+            if viewModel.isLoading && viewModel.favourties.isEmpty {
+                LoadingView(message: "Loading favourites…")
+                    .accessibilityIdentifier(UiIdentifiers.shared.FAVOURITES_LOADING)
+            } else if viewModel.error != nil && viewModel.favourties.isEmpty {
+                ErrorView(error: viewModel.error!)
+                    .accessibilityIdentifier(UiIdentifiers.shared.FAVOURITES_ERROR)
+            } else if viewModel.favourties.isEmpty {
+                FavouritesEmptyView()
+            } else {
+                ScrollView {
+                    LazyVGrid(columns: columns, alignment: .leading) {
+                        Section {
+
+                        } header: {
+                            SortOrderToggle(
+                                sortOrder: viewModel.sortOrder,
+                                onChange: {
+                                    viewModel.onSortOrderChange(sortOrder: $0)
+                                }
+                            )
+                        }
+
+                        ForEach(Array(viewModel.favourties.enumerated()), id: \.offset) { _, value in
+                            FavouriteCard(
+                                favourite: value,
+                                onRemove: { viewModel.remove(favourite: value) },
+                                onClick: {
+                                    clickedBreed = SheetData(
+                                        id: value.imageId,
+                                        breed: value.breed
+                                    )
+                                },
+                            )
+                        }
+
+                        EndOfListLabelView()
+                            .gridCellColumns(columns.count)
                     }
-                    
-                    ForEach(Array(viewModel.favourties.enumerated()), id: \.offset) { i, value in
-                        FavouriteCard(
-                            favourite: value,
-                            onRemove: { viewModel.remove(favourite: value) },
-                            onClick: {
-                                clickedBreed = SheetData(
-                                    id: value.imageId,
-                                    breed: value.breed
-                                )
-                            },
-                        )
-                    }
+                    .padding(.top, topBarHeight)
+                    .padding(10)
                 }
-                .padding(.top, topBarHeight)
-                .padding(10)
+                .accessibilityIdentifier(UiIdentifiers.shared.FAVOURITES_GRID)
             }
             
             TopBar(
@@ -69,13 +83,17 @@ struct FavouritesScreen : View {
                 onBack: onBack
             )
         }
+        .accessibilityIdentifier(UiIdentifiers.shared.FAVOURITES_SCREEN)
         .sheet(
             item: $clickedBreed,
             onDismiss: {
                 clickedBreed = nil
             }
         ) { value in
-            BreedDetailSheet(breed: value.breed)
+            VStack {
+                BreedDetailSheet(breed: value.breed)
+            }
+            .accessibilityIdentifier(UiIdentifiers.shared.FAVOURITES_DETAIL_SHEET)
         }
         .overlay(alignment: .bottom) {
             SnackbarView()
@@ -118,6 +136,7 @@ private struct TopBar : View {
                         .scaledToFit()
                         .frame(width: 24, height: 24)
                 }
+                .accessibilityIdentifier(UiIdentifiers.shared.FAVOURITES_TOP_BAR_BACK_BUTTON)
                 
                 Text("Favourites")
                     .font(.title2.bold())
@@ -164,8 +183,14 @@ private struct SortOrderToggle : View {
                         .roundedBorder(.clear, cornerRadius: 20)
                         .animation(.easeOut(duration: 0.2), value: sortOrder)
                 }
+                .accessibilityIdentifier(
+                    value == SortOrder.asc
+                    ? UiIdentifiers.shared.FAVOURITES_SORT_ORDER_ASC
+                    : UiIdentifiers.shared.FAVOURITES_SORT_ORDER_DESC
+                )
             }
         }
+        .accessibilityIdentifier(UiIdentifiers.shared.FAVOURITES_SORT_ORDER)
     }
 }
 

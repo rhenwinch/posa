@@ -5,8 +5,8 @@
 //  Created by Rhen on 3/25/26.
 //
 
-import Swift
 import SwiftUI
+import shared
 
 struct SwipeStampView : View {
     let alignment: Alignment
@@ -50,6 +50,7 @@ struct SwipeLikeOverlay : View {
             rotationDegrees: -22,
             offsetX: offsetX
         )
+        .accessibilityIdentifier(UiIdentifiers.shared.BREEDS_OVERLAY_LIKE)
     }
 }
 
@@ -64,6 +65,7 @@ struct SwipeNopeOverlay : View {
             rotationDegrees: 22,
             offsetX: offsetX
         )
+        .accessibilityIdentifier(UiIdentifiers.shared.BREEDS_OVERLAY_NOPE)
     }
 }
 

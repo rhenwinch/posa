@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import shared
 
 struct FavouritesEmptyView : View {
     var body: some View {
@@ -24,6 +25,7 @@ struct FavouritesEmptyView : View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .multilineTextAlignment(.center)
         .foregroundStyle(Color.appOnSurface)
+        .accessibilityIdentifier(UiIdentifiers.shared.FAVOURITES_EMPTY)
     }
 }
 

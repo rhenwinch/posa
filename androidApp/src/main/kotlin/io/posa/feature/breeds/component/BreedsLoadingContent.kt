@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import io.posa.core.common.UiIdentifiers
 
 
 @Composable
@@ -20,7 +21,7 @@ internal fun BreedsLoadingContent() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .testTag("breeds:loading"),
+            .testTag(UiIdentifiers.BREEDS_LOADING),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

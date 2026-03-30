@@ -23,22 +23,29 @@ struct BreedsScreen : View {
             Color.appSurface.ignoresSafeArea()
             
             TopBar(onNavigateToFavouritesScreen: onNavigateToFavouritesScreen)
-            
-            if viewModel.isLoading && viewModel.deck.isEmpty {
-                LoadingView(message: "Finding cats…")
-            } else if viewModel.error != nil && viewModel.deck.isEmpty {
-                ErrorView(error: viewModel.error!)
-            } else if viewModel.deck.isEmpty {
-                BreedsDeckEmptyView(reachedEnd: viewModel.hasReachedEnd)
-            } else {
-                BreedDeckContent(
-                    isPrefetching: viewModel.isPrefetching,
-                    deck: viewModel.deck,
-                    onSwipeLeft: { viewModel.swipeLeft(breed: $0) },
-                    onSwipeRight: { viewModel.swipeRight(breed: $0) },
-                )
+
+            ZStack {
+                if viewModel.isLoading && viewModel.deck.isEmpty {
+                    LoadingView(message: "Finding cats…")
+                        .accessibilityIdentifier(UiIdentifiers.shared.BREEDS_LOADING)
+                } else if viewModel.error != nil && viewModel.deck.isEmpty {
+                    ErrorView(error: viewModel.error!)
+                        .accessibilityIdentifier(UiIdentifiers.shared.BREEDS_ERROR)
+                } else if viewModel.deck.isEmpty {
+                    BreedsDeckEmptyView(reachedEnd: viewModel.hasReachedEnd)
+                } else {
+                    BreedDeckContent(
+                        isPrefetching: viewModel.isPrefetching,
+                        deck: viewModel.deck,
+                        onSwipeLeft: { viewModel.swipeLeft(breed: $0) },
+                        onSwipeRight: { viewModel.swipeRight(breed: $0) },
+                    )
+                }
             }
+            .accessibilityIdentifier(UiIdentifiers.shared.BREEDS_CONTENT)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        .accessibilityIdentifier(UiIdentifiers.shared.BREEDS_SCREEN)
         .overlay(alignment: .bottom) {
             SnackbarView()
                 .environmentObject(snackbar)
@@ -85,6 +92,7 @@ private struct TopBar : View {
                         .frame(width: 24, height: 24)
                         .foregroundStyle(Color.appTertiary)
                 }
+                .accessibilityIdentifier(UiIdentifiers.shared.BREEDS_TOP_BAR_FAVOURITES_BUTTON)
             }
             .padding(.horizontal)
         }
@@ -113,6 +121,11 @@ private struct BreedDeckContent : View {
                         onSwipeLeft: { onSwipeLeft(breed) },
                         onSwipeRight: { onSwipeRight(breed) }
                     )
+                    .accessibilityIdentifier(
+                        depthIndex == 0
+                        ? UiIdentifiers.shared.breedsCardTop(breedId: breed.id)
+                        : UiIdentifiers.shared.breedsCardBack(breedId: breed.id)
+                    )
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -127,6 +140,7 @@ private struct BreedDeckContent : View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .accessibilityIdentifier(UiIdentifiers.shared.BREEDS_DECK)
     }
 }
 

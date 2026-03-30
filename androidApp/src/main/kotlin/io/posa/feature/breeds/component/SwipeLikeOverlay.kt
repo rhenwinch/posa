@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import io.posa.core.common.UiIdentifiers
 
 private val LikeGreen = Color(0xFF44C766)
 
@@ -36,7 +37,7 @@ internal fun SwipeLikeOverlay(offsetX: Animatable<Float, AnimationVector1D>) {
             rotation = -22f,
             modifier = Modifier
                 .padding(22.dp)
-                .testTag("breeds:overlay:like")
+                .testTag(UiIdentifiers.BREEDS_OVERLAY_LIKE)
                 .semantics { contentDescription = "Like" },
         )
     }

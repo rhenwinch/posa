@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import io.posa.core.common.UiIdentifiers
 
 
 @Composable
@@ -23,7 +24,7 @@ internal fun FavouritesErrorContent(error: Throwable) {
         modifier = Modifier
             .fillMaxSize()
             .padding(32.dp)
-            .testTag("favourites:error"),
+            .testTag(UiIdentifiers.FAVOURITES_ERROR),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

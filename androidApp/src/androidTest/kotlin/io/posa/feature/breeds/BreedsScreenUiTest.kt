@@ -13,6 +13,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeLeft
 import androidx.compose.ui.test.swipeRight
+import io.posa.core.common.UiIdentifiers
 import io.posa.test.TestFakes
 import io.posa.theme.AppTheme
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -41,7 +42,7 @@ class BreedsScreenUiTest {
             }
         }
 
-        rule.onNodeWithTag("breeds:loading").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.BREEDS_LOADING).assertIsDisplayed()
 
         rule.runOnIdle {
             uiState.value = BreedsUiState(
@@ -54,11 +55,11 @@ class BreedsScreenUiTest {
         }
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("breeds:card:top:b1")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.breedsCardTop("b1"))).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("breeds:deck").assertIsDisplayed()
-        rule.onNodeWithTag("breeds:card:top:b1").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.BREEDS_DECK).assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.breedsCardTop("b1")).assertIsDisplayed()
         rule.onNodeWithContentDescription("Breed card Abyssinian").assertIsDisplayed()
     }
 
@@ -148,20 +149,20 @@ class BreedsScreenUiTest {
         }
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("breeds:card:top:b1")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.breedsCardTop("b1"))).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("breeds:card:top:b1").performTouchInput { swipeRight() }
+        rule.onNodeWithTag(UiIdentifiers.breedsCardTop("b1")).performTouchInput { swipeRight() }
 
         rule.waitUntil(6_000) {
             rule.onAllNodes(hasText("Added to favourites ❤️")).fetchSemanticsNodes().isNotEmpty()
         }
 
         rule.onNodeWithText("Added to favourites ❤️").assertIsDisplayed()
-        if (rule.onAllNodes(hasTestTag("breeds:card:top:b1")).fetchSemanticsNodes().isNotEmpty()) {
+        if (rule.onAllNodes(hasTestTag(UiIdentifiers.breedsCardTop("b1"))).fetchSemanticsNodes().isNotEmpty()) {
             throw AssertionError("Expected top card b1 to be removed")
         }
-        rule.onNodeWithTag("breeds:card:top:b2").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.breedsCardTop("b2")).assertIsDisplayed()
     }
 
     @Test
@@ -194,10 +195,10 @@ class BreedsScreenUiTest {
         }
 
         rule.waitUntil(5_000) {
-            rule.onAllNodes(hasTestTag("breeds:card:top:b1")).fetchSemanticsNodes().isNotEmpty()
+            rule.onAllNodes(hasTestTag(UiIdentifiers.breedsCardTop("b1"))).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("breeds:card:top:b1").performTouchInput { swipeLeft() }
+        rule.onNodeWithTag(UiIdentifiers.breedsCardTop("b1")).performTouchInput { swipeLeft() }
 
         rule.waitUntil(6_000) {
             rule.onAllNodes(hasText("troll")).fetchSemanticsNodes().isNotEmpty()
@@ -207,10 +208,10 @@ class BreedsScreenUiTest {
             throw AssertionError("Did not expect normal favourite snackbar on troll swipe")
         }
 
-        if (rule.onAllNodes(hasTestTag("breeds:card:top:b1")).fetchSemanticsNodes().isNotEmpty()) {
+        if (rule.onAllNodes(hasTestTag(UiIdentifiers.breedsCardTop("b1"))).fetchSemanticsNodes().isNotEmpty()) {
             throw AssertionError("Expected top card b1 to be removed")
         }
-        rule.onNodeWithTag("breeds:card:top:b2").assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.breedsCardTop("b2")).assertIsDisplayed()
     }
 
     @Test
@@ -241,8 +242,8 @@ class BreedsScreenUiTest {
             rule.onAllNodes(hasText("Posa")).fetchSemanticsNodes().isNotEmpty()
         }
 
-        rule.onNodeWithTag("breeds:topBar:favouritesButton").assertIsDisplayed()
-        rule.onNodeWithTag("breeds:topBar:favouritesButton").performClick()
+        rule.onNodeWithTag(UiIdentifiers.BREEDS_TOP_BAR_FAVOURITES_BUTTON).assertIsDisplayed()
+        rule.onNodeWithTag(UiIdentifiers.BREEDS_TOP_BAR_FAVOURITES_BUTTON).performClick()
 
         rule.waitUntil(2_000) { navigated }
     }
