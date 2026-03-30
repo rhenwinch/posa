@@ -26,8 +26,8 @@ struct FavouritesScreen : View {
     
     
     private let columns = [
-        GridItem(.adaptive(minimum: 200)),
-        GridItem(.adaptive(minimum: 200))
+        GridItem(.flexible()),
+        GridItem(.flexible())
     ]
     
     var body: some View {
@@ -56,7 +56,7 @@ struct FavouritesScreen : View {
                             )
                         }
 
-                        ForEach(Array(viewModel.favourties.enumerated()), id: \.offset) { _, value in
+                        ForEach(viewModel.favourties, id: \.imageId) { value in
                             FavouriteCard(
                                 favourite: value,
                                 onRemove: { viewModel.remove(favourite: value) },
@@ -69,13 +69,20 @@ struct FavouritesScreen : View {
                             )
                         }
 
-                        EndOfListLabelView()
-                            .gridCellColumns(columns.count)
+                        Section {
+                            
+                        } header: {
+                            EndOfListLabelView()
+                                .gridCellColumns(columns.count)
+                        }
                     }
+                    .accessibilityElement(children: .contain)
                     .padding(.top, topBarHeight)
                     .padding(10)
                 }
                 .accessibilityIdentifier(UiIdentifiers.shared.FAVOURITES_GRID)
+                .accessibilityElement(children: .contain)
+                .animation(.easeOut(duration: 0.2), value: viewModel.favourties)
             }
             
             TopBar(
@@ -84,6 +91,7 @@ struct FavouritesScreen : View {
             )
         }
         .accessibilityIdentifier(UiIdentifiers.shared.FAVOURITES_SCREEN)
+        .accessibilityElement(children: .contain)
         .sheet(
             item: $clickedBreed,
             onDismiss: {
@@ -94,6 +102,7 @@ struct FavouritesScreen : View {
                 BreedDetailSheet(breed: value.breed)
             }
             .accessibilityIdentifier(UiIdentifiers.shared.FAVOURITES_DETAIL_SHEET)
+            .accessibilityElement(children: .contain)
         }
         .overlay(alignment: .bottom) {
             SnackbarView()
@@ -191,6 +200,7 @@ private struct SortOrderToggle : View {
             }
         }
         .accessibilityIdentifier(UiIdentifiers.shared.FAVOURITES_SORT_ORDER)
+        .accessibilityElement(children: .contain)
     }
 }
 

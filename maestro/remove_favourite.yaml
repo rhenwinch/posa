@@ -1,0 +1,32 @@
+appId: io.posa
+---
+- launchApp:
+    clearState: true
+- waitForAnimationToEnd
+- repeat:
+    times: 5
+    commands:
+      - assertVisible:
+          id: "breeds:card:top:.*"
+      - swipe:
+          from:
+            id: "breeds:card:top:.*"
+          start: 10%, 50%
+          end: 90%, 50%
+      - extendedWaitUntil:
+          notVisible: "^Added.*"
+          timeout: 8000
+
+- tapOn:
+    id: breeds:topBar:favouritesButton
+- waitForAnimationToEnd
+- assertVisible: "5"
+
+- repeat:
+    times: 2
+    commands:
+      - tapOn:
+          id: favourites:item:.*:remove
+      - waitForAnimationToEnd
+
+- assertVisible: "3"

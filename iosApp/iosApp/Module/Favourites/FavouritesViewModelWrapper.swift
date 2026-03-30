@@ -22,6 +22,7 @@ extension FavouritesScreen {
         @Published var message: String?
         @Published var sortOrder: shared.SortOrder = SortOrder.desc
         
+        private var isRemoving = false
         
         init() {
             viewModel = IosViewModelProvider().favouritesViewModel

@@ -43,9 +43,11 @@ struct BreedsScreen : View {
                 }
             }
             .accessibilityIdentifier(UiIdentifiers.shared.BREEDS_CONTENT)
+            .accessibilityElement(children: .contain)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .accessibilityIdentifier(UiIdentifiers.shared.BREEDS_SCREEN)
+        .accessibilityElement(children: .contain)
         .overlay(alignment: .bottom) {
             SnackbarView()
                 .environmentObject(snackbar)
@@ -95,8 +97,10 @@ private struct TopBar : View {
                 .accessibilityIdentifier(UiIdentifiers.shared.BREEDS_TOP_BAR_FAVOURITES_BUTTON)
             }
             .padding(.horizontal)
+            .accessibilityElement(children: .contain)
         }
         .frame(height: topBarHeight)
+        .accessibilityElement(children: .contain)
     }
 }
 
@@ -126,6 +130,7 @@ private struct BreedDeckContent : View {
                         ? UiIdentifiers.shared.breedsCardTop(breedId: breed.id)
                         : UiIdentifiers.shared.breedsCardBack(breedId: breed.id)
                     )
+                    .accessibilityElement(children: .contain)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -141,6 +146,7 @@ private struct BreedDeckContent : View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .accessibilityIdentifier(UiIdentifiers.shared.BREEDS_DECK)
+        .accessibilityElement(children: .contain)
     }
 }
 

@@ -55,40 +55,36 @@ struct FavouriteCard : View {
                 .padding(.vertical, 10)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
+            .onTapGesture { onClick() }
             
-            Button {
-                withAnimation(.easeOut(duration: 0.2)) {
-                    scale = 0.88
-                    opacity = 0
-                } completion: {
-                    onRemove()
-                }
-            } label: {
-                ZStack {
-                    Circle()
-                        .fill(Color.appTertiaryContainer.opacity(0.8))
+            Button(
+                action: onRemove,
+                label: {
+                    ZStack {
+                        Circle()
+                            .fill(Color.appTertiaryContainer.opacity(0.8))
 
-                    Image("unfavourite")
-                        .renderingMode(.template)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 14, height: 14)
-                        .foregroundStyle(Color.appOnTertiaryContainer)
+                        Image("unfavourite")
+                            .renderingMode(.template)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 14, height: 14)
+                            .foregroundStyle(Color.appOnTertiaryContainer)
+                    }
+                    .frame(width: 28, height: 28)
                 }
-                .frame(width: 28, height: 28)
-            }
-            .buttonStyle(.plain)
+            )
             .accessibilityIdentifier(UiIdentifiers.shared.favouritesItemRemove(imageId: favourite.imageId))
+            .buttonStyle(.plain)
             .padding(8)
         }
         .aspectRatio(1, contentMode: .fit)
+        .contentShape(Rectangle())
         .roundedBorder(Color.appSurface.opacity(0.6), width: 0.4, cornerRadius: 5)
         .scaleEffect(scale)
         .opacity(opacity)
         .shadow(radius: 4)
-        .onTapGesture {
-            onClick()
-        }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier(UiIdentifiers.shared.favouritesItem(imageId: favourite.imageId))
     }
 }
